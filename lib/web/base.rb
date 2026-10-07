@@ -1,7 +1,7 @@
 module Web
   # Uma action da interface: set_instance -> validate! -> run! -> set_response. A resposta é um Hash
-  # que o controller expõe à view por respond_attempt; erro de regra volta em `error` em vez de
-  # estourar no controller.
+  # que o controller expõe à view por respond_attempt; erro de regra ou de validação volta em `error`
+  # em vez de estourar no controller.
   class Base
     attr_accessor :params, :instance, :error
 
@@ -18,6 +18,8 @@ module Web
       set_response
     rescue Core::Errors::Base => e
       error_response(e.message)
+    rescue ActiveRecord::RecordInvalid => e
+      error_response(e.record.errors.full_messages.to_sentence)
     end
 
     private

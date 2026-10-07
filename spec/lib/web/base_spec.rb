@@ -40,6 +40,14 @@ RSpec.describe Web::Base do
     expect(service.steps).to eq(%i[set_instance])
   end
 
+  it "devolve o registro inválido como mensagem com os erros dele" do
+    service = service_class do
+      define_method(:run!) { List.create!(name: "") }
+    end.new(params: { instance: "registro" })
+
+    expect(service.call).to eq(instance: "registro", error: List.new.tap(&:valid?).errors.full_messages.to_sentence)
+  end
+
   it "deixa estourar o erro que não é de regra" do
     service = service_class do
       define_method(:run!) { raise ArgumentError, "bug" }
