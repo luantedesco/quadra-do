@@ -10,8 +10,6 @@ class List < ApplicationRecord
     tasks.build(attributes).tap { |task| task.position = position }
   end
 
-  private
-
   def next_task_position
     last_position = tasks.actives.where(parent_id: nil).maximum(:position)
     last_position ? last_position + 1 : 0
