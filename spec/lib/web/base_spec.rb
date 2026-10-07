@@ -55,4 +55,33 @@ RSpec.describe Web::Base do
 
     expect { service.call }.to raise_error(ArgumentError, "bug")
   end
+
+  describe "set_instance padrão" do
+    let(:service_class) do
+      Class.new(described_class) do
+        private
+
+        def klass
+          List
+        end
+      end
+    end
+
+    it "busca o registro do klass pelo id" do
+      list = create(:list)
+
+      expect(service_class.new(params: { id: list.id }).call).to include(instance: list)
+    end
+
+    it "fica sem registro quando não vem id" do
+      expect(service_class.new(params: {}).call).to include(instance: nil)
+    end
+
+    it "não acha registro apagado" do
+      list = create(:list)
+      list.soft_delete!
+
+      expect { service_class.new(params: { id: list.id }).call }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
 end

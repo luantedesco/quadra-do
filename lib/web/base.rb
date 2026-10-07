@@ -24,7 +24,12 @@ module Web
 
     private
 
+    # Registro apagado responde 404, como um que não existe.
     def set_instance
+      self.instance = klass.actives.find(params[:id]) if klass && params[:id].present?
+    end
+
+    def klass
       nil
     end
 
