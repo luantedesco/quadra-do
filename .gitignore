@@ -33,3 +33,6 @@
 # Ignore key files for decrypting credentials and more.
 /config/*.key
 
+
+# Estado do rspec para --only-failures.
+/spec/examples.txt
