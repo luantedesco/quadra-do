@@ -1,0 +1,31 @@
+---
+EnableDefaultLinters: true
+glob: "app/views/**/*.html.erb"
+linters:
+  FinalNewline:
+    enabled: true
+  SelfClosingTag:
+    enabled: true
+    enforced_style: never
+  Rubocop:
+    enabled: true
+    rubocop_config:
+      inherit_from:
+        - .rubocop.yml
+      # Cada trecho Ruby da view é linted solto, fora do arquivo: estes cops acusam o recorte, não o código.
+      Layout/InitialIndentation:
+        Enabled: false
+      Layout/LeadingEmptyLines:
+        Enabled: false
+      Layout/TrailingEmptyLines:
+        Enabled: false
+      Layout/TrailingWhitespace:
+        Enabled: false
+      Layout/LineLength:
+        Enabled: false
+      Naming/FileName:
+        Enabled: false
+      Style/FrozenStringLiteralComment:
+        Enabled: false
+      Lint/UselessAssignment:
+        Enabled: false
