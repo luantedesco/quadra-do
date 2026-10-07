@@ -1,0 +1,46 @@
+module Web
+  # Uma action da interface: set_instance -> validate! -> run! -> set_response. A resposta é um Hash
+  # que o controller expõe à view por respond_attempt; erro de regra volta em `error` em vez de
+  # estourar no controller.
+  class Base
+    attr_accessor :params, :instance, :error
+
+    def initialize(params:)
+      self.params = params
+      self.instance = nil
+      self.error = nil
+    end
+
+    def call
+      set_instance
+      validate!
+      run!
+      set_response
+    rescue Core::Errors::Base => e
+      error_response(e.message)
+    end
+
+    private
+
+    def set_instance
+      nil
+    end
+
+    def validate!
+      nil
+    end
+
+    def run!
+      nil
+    end
+
+    def set_response
+      { instance:, error: }
+    end
+
+    def error_response(message)
+      self.error = message
+      set_response
+    end
+  end
+end
