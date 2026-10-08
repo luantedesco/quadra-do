@@ -36,6 +36,31 @@ RSpec.describe "Listas", type: :request do
       assert_select "#tasks-panel-lists li.active a[href=?]", list_path(casa)
     end
 
+    it "mostra as tarefas abertas de topo na ordem, com prazo e prioridade, sem subtarefas, concluídas e apagadas" do
+      list = create(:list)
+      second = create(:task, list:, title: "Comprar café", position: 1, priority: :high, deadline: Time.zone.parse("2026-10-08 14:00"))
+      first = create(:task, list:, title: "Revisar relatório", position: 0)
+      create(:task, list:, title: "Subtarefa", parent: first, position: 2)
+      create(:task, list:, title: "Concluída", position: 3, finished_at: Time.current)
+      create(:task, list:, title: "Apagada", position: 4).soft_delete!
+
+      get list_path(list)
+
+      assert_select "#list-tasks [data-id]", count: 2
+      assert_select "#list-tasks [data-id]:nth-of-type(1)[data-id=?]", first.id
+      assert_select "#list-tasks [data-id=?]", second.id do
+        assert_select ".ri-calendar-line"
+        assert_select ".badge.badge-danger-lighten", text: "Alta"
+      end
+      assert_select "#list-tasks [data-id=?] .badge", first.id, count: 0
+    end
+
+    it "avisa quando a lista não tem tarefa aberta" do
+      get list_path(create(:list))
+
+      assert_select "#list-tasks", text: /Nenhuma tarefa aberta/
+    end
+
     it "responde 404 para lista apagada" do
       list = create(:list)
       list.soft_delete!

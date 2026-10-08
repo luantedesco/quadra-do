@@ -20,8 +20,14 @@ pt-BR:
     edit: "Editar lista"
     new: "Nova lista"
     no_color: "Sem cor"
+    no_tasks: "Nenhuma tarefa aberta nesta lista."
   panel:
     empty: "Nenhuma lista ainda. Crie a primeira para organizar suas tarefas."
   sidebar:
     menu: "Menu"
     theme_mode: "Tema"
+  tasks:
+    priorities:
+      high: "Alta"
+      low: "Baixa"
+      medium: "Média"

@@ -1,0 +1,13 @@
+<div class="row justify-content-sm-between py-1" data-id="<%= task.id %>">
+  <div class="col-sm-6 mb-2 mb-sm-0 text-truncate">
+    <%= task.title %>
+  </div>
+  <div class="col-sm-6">
+    <ul class="list-inline font-13 text-sm-end mb-0">
+      <% if task.deadline %>
+        <li class="list-inline-item"><i class="ri-calendar-line font-16 me-1"></i><%= l(task.deadline, format: :short) %></li>
+      <% end %>
+      <li class="list-inline-item ms-2"><%= priority_badge(task) %></li>
+    </ul>
+  </div>
+</div>
