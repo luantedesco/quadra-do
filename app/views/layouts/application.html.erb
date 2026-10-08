@@ -17,8 +17,8 @@
     <%= favicon_link_tag "favicon.svg", type: "image/svg+xml" %>
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%# Só o CSS compilado pelo dartsass: os .css de app/assets/stylesheets já entram nele por @import. %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
