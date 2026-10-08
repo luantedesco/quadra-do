@@ -156,6 +156,55 @@ RSpec.describe "Tarefas", type: :request do
     end
   end
 
+  describe "subtarefas no painel" do
+    let(:list) { create(:list) }
+    let(:task) { create(:task, list:, title: "Revisar relatório") }
+
+    it "cria a subtarefa no fim das subtarefas e responde com o refresh, sem fechar o painel" do
+      post tasks_path, params: { task: { parent_id: task.id, title: "Ver os números" } }, as: :turbo_stream
+
+      subtask = task.subtasks.find_by!(title: "Ver os números")
+      expect(subtask).to have_attributes(list:, position: 0)
+      assert_turbo_stream action: :refresh
+      expect(response.body).not_to include("request-id")
+    end
+
+    it "apaga a subtarefa e responde com o refresh" do
+      subtask = create(:task, list:, parent: task)
+
+      delete task_path(subtask), as: :turbo_stream
+
+      expect(subtask.reload.deleted_at).to be_present
+      assert_turbo_stream action: :refresh
+    end
+
+    it "lista as subtarefas ativas com a contagem de concluídas, o concluir, o apagar e o campo de criar" do
+      done = create(:task, list:, parent: task, title: "Passo 1", position: 0, finished_at: Time.current)
+      create(:task, list:, parent: task, title: "Passo 2", position: 1)
+      create(:task, list:, parent: task, title: "Apagada", position: 2).soft_delete!
+
+      get task_path(task, from: list_path(list)), headers: { "Turbo-Frame" => "task_detail" }
+
+      assert_select "#task-subtasks" do
+        assert_select "h5 span", text: "1/2"
+        assert_select "##{ActionView::RecordIdentifier.dom_id(done)} input[type=checkbox][checked]"
+        assert_select "a[href=?][data-turbo-frame=task_detail]", task_path(done, from: list_path(list)), text: "Passo 1"
+        assert_select "a[href=?][data-turbo-method=delete]", task_path(done)
+        assert_select "a", text: "Apagada", count: 0
+        assert_select "form[action=?] input[name='task[parent_id]'][value=?]", tasks_path, task.id
+      end
+    end
+
+    it "abre a subtarefa no painel com o link para a tarefa pai, sem bloco de subtarefas" do
+      subtask = create(:task, list:, parent: task)
+
+      get task_path(subtask, from: list_path(list)), headers: { "Turbo-Frame" => "task_detail" }
+
+      assert_select "#task-detail a[href=?]", task_path(task, from: list_path(list)), text: /Revisar relatório/
+      assert_select "#task-subtasks", count: 0
+    end
+  end
+
   describe "concluir e reabrir" do
     let(:list) { create(:list) }
     let(:task) { create(:task, list:) }

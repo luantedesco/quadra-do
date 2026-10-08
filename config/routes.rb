@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
   root "lists#index"
   resources :lists, except: :index
-  resources :tasks, only: %i[show create update] do
+  resources :tasks, only: %i[show create update destroy] do
     patch :move, on: :member
     patch :toggle_finish, on: :member
     patch :move_to_list, on: :member

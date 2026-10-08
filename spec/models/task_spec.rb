@@ -116,6 +116,18 @@ RSpec.describe Task, type: :model do
     end
   end
 
+  describe "#build_subtask" do
+    it "monta a subtarefa na lista da tarefa e no fim das subtarefas ativas, sem salvar" do
+      task = create(:task)
+      create(:task, list: task.list, parent: task, position: 2)
+      create(:task, list: task.list, parent: task, position: 5).soft_delete!
+
+      subtask = task.build_subtask(title: "Passo")
+
+      expect(subtask).to have_attributes(parent: task, list: task.list, position: 3, title: "Passo", new_record?: true)
+    end
+  end
+
   describe "#move_to_list!" do
     let(:task) { create(:task) }
     let(:new_list) { create(:list) }

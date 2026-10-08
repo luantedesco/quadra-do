@@ -10,6 +10,15 @@ class Task < ApplicationRecord
   validates :title, presence: true
   validate :parent_must_be_in_same_list, :subtask_must_be_one_level, if: :parent_id?
 
+  # Subtarefa nova entra na lista da tarefa e no fim da ordem das subtarefas dela.
+  def build_subtask(attributes = {})
+    position = subtasks.actives.maximum(:position)&.succ || 0
+    subtasks.build(attributes).tap do |subtask|
+      subtask.list = list
+      subtask.position = position
+    end
+  end
+
   def finish!
     update!(finished_at: Time.current)
   end

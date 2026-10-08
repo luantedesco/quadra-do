@@ -61,8 +61,10 @@ pt-BR:
     menu: "Menu"
     theme_mode: "Tema"
   tasks:
+    add_subtask: "Adicionar subtarefa"
     add_task: "Adicionar tarefa"
     close: "Fechar"
+    destroy_subtask_confirm: "Apagar a subtarefa?"
     finish: "Concluída"
     move:
       not_droppable: "Esta seção não recebe tarefa."
@@ -73,3 +75,4 @@ pt-BR:
       low: "Baixa"
       medium: "Média"
       none: "Nenhuma"
+    subtasks: "Subtarefas"

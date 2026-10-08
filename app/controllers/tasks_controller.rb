@@ -2,7 +2,7 @@ class TasksController < ApplicationController
   layout -> { turbo_frame_request? ? "turbo_rails/frame" : "application" }
   helper_method :task_return_path
 
-  service_actions :show, :create, :update, :move, :toggle_finish, :move_to_list
+  service_actions :show, :create, :update, :destroy, :move, :toggle_finish, :move_to_list
 
   private
 
@@ -12,9 +12,11 @@ class TasksController < ApplicationController
     redirect_to "#{return_path}?task=#{@task.id}" unless turbo_frame_request?
   end
 
-  # Volta para a lista com o campo de adicionar focado, para a próxima tarefa; o erro aparece abaixo
-  # dele.
+  # A tarefa volta para a lista com o campo de adicionar focado, para a próxima, e o erro aparece abaixo
+  # dele. A subtarefa é criada no painel, que fica aberto: a página só atualiza.
   def create_redirect
+    return render(status: @error ? :unprocessable_content : :ok) if @task.parent_id?
+
     flash[:quick_add] = @error || :ok
     redirect_to list_path(@task.list)
   end
