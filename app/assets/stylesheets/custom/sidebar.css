@@ -1,0 +1,44 @@
+/* Sem o SimpleBar do Hyper, o menu rola com o scroll nativo. Só com ícones (condensed), o item
+   expande por cima do conteúdo no hover e o container não pode cortá-lo. */
+#leftside-menu-container {
+  overflow-y: auto;
+}
+
+html[data-sidenav-size="condensed"] #leftside-menu-container {
+  overflow: visible;
+}
+
+/* Sem topbar nem footer, o conteúdo ocupa no mínimo a tela inteira e não reserva no fim o espaço
+   do footer do Hyper. */
+.content-page {
+  min-height: 100vh;
+  padding-bottom: 0.75rem;
+}
+
+/* Só com ícones, o Hyper solta a sidebar do topo (position: absolute) e estica o conteúdo para
+   1800px, contando com o SimpleBar; aqui ela continua fixa e o conteúdo tem a altura da tela. */
+html[data-sidenav-size="condensed"]:not([data-layout="topnav"]) .wrapper .leftside-menu {
+  position: fixed;
+}
+
+html[data-sidenav-size="condensed"]:not([data-layout="topnav"]) .wrapper .content-page {
+  min-height: 100vh;
+}
+
+/* O logo é um ícone quadrado seguido do nome, não o wordmark baixo que o Hyper espera. */
+.leftside-menu .logo {
+  padding: 0 12px;
+}
+
+.leftside-menu .logo img {
+  height: 32px;
+  vertical-align: middle;
+}
+
+.leftside-menu .logo-text {
+  margin-left: 8px;
+  vertical-align: middle;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ct-menu-item-active-color);
+}

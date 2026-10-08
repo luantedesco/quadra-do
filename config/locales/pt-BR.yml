@@ -1,0 +1,8 @@
+pt-BR:
+  activerecord:
+    models:
+      task:
+        one: "Tarefa"
+        other: "Tarefas"
+  sidebar:
+    theme_mode: "Tema"

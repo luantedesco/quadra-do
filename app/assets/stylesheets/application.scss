@@ -1,4 +1,6 @@
-// Ordem da cascata: CSS base do Select2, tema Hyper (compila o Bootstrap e estiliza o Select2) e ícones.
+// Ordem da cascata: CSS base do Select2, tema Hyper (compila o Bootstrap e estiliza o Select2), ajustes
+// do app sobre o tema e ícones.
 @import "select2/select2";
 @import "hyper/app";
+@import "custom/sidebar";
 @import "hyper/icons/remixicon";

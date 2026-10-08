@@ -9,8 +9,8 @@ RSpec.describe "Listas", type: :request do
     get root_path
 
     expect(response).to have_http_status(:ok)
-    assert_select "li", count: 2
-    assert_select "li:nth-of-type(1)", text: "Trabalho"
-    assert_select "li:nth-of-type(2)", text: "Casa"
+    assert_select ".content-page li", count: 2
+    assert_select ".content-page li:nth-of-type(1)", text: "Trabalho"
+    assert_select ".content-page li:nth-of-type(2)", text: "Casa"
   end
 end
