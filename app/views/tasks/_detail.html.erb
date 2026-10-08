@@ -45,6 +45,6 @@
       <%= form.text_area :description, rows: 5, class: "form-control", data: { action: "change->auto-submit#submit" } %>
     <% end %>
 
-    <%= render "tasks/subtasks", task: task unless task.parent_id? %>
+    <%= render "tasks/subtasks", task: task if task.accepts_subtasks? %>
   </div>
 </div>

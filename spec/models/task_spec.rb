@@ -20,20 +20,45 @@ RSpec.describe Task, type: :model do
       expect(subtask.errors.details[:parent]).to include(error: :invalid)
     end
 
-    it "não tem subtarefa de subtarefa" do
-      subtask = create(:task, parent:, list:)
-      nested = build(:task, parent: subtask, list:)
-
-      expect(nested).not_to be_valid
-      expect(nested.errors.details[:parent]).to include(error: :invalid)
+    # Cadeia tarefa de topo -> sub -> sub..., com `levels` níveis de subtarefas.
+    def chain(levels)
+      [ parent ].tap { |tasks| levels.times { tasks << create(:task, list:, parent: tasks.last) } }
     end
 
-    it "não vira subtarefa quando já tem subtarefas" do
-      create(:task, parent:, list:)
-      parent.parent = create(:task, list:)
+    it "tem subtarefa de subtarefa até 5 níveis abaixo da tarefa de topo" do
+      tasks = chain(4)
+
+      expect(build(:task, list:, parent: tasks.last)).to be_valid
+      expect(tasks.last.depth).to eq(4)
+    end
+
+    it "não passa do 5º nível" do
+      tasks = chain(5)
+      too_deep = build(:task, list:, parent: tasks.last)
+
+      expect(too_deep).not_to be_valid
+      expect(too_deep.errors.details[:parent]).to include(error: :invalid)
+      expect(tasks.last).not_to be_accepts_subtasks
+    end
+
+    it "não vira filha de outra se as subtarefas dela passariam do 5º nível" do
+      tasks = chain(2)
+      other = chain_from(create(:task, list:), 3)
+      tasks.first.parent = other
+
+      expect(tasks.first).not_to be_valid
+    end
+
+    it "não vira filha de uma descendente dela" do
+      tasks = chain(2)
+      parent.parent = tasks.last
 
       expect(parent).not_to be_valid
       expect(parent.errors.details[:parent]).to include(error: :invalid)
+    end
+
+    def chain_from(top, levels)
+      levels.times.reduce(top) { |task, _| create(:task, list:, parent: task) }
     end
   end
 
@@ -132,14 +157,15 @@ RSpec.describe Task, type: :model do
     let(:task) { create(:task) }
     let(:new_list) { create(:list) }
 
-    it "leva a tarefa para o fim da lista nova, junto com as subtarefas" do
+    it "leva a tarefa para o fim da lista nova, junto com a árvore de subtarefas" do
       create(:task, list: new_list, position: 4)
       subtask = create(:task, list: task.list, parent: task)
+      nested = create(:task, list: task.list, parent: subtask)
 
       task.move_to_list!(new_list)
 
       expect(task.reload).to have_attributes(list: new_list, position: 5)
-      expect(subtask.reload.list).to eq(new_list)
+      expect([ subtask, nested ].map { |record| record.reload.list }).to all(eq(new_list))
     end
   end
 

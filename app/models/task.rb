@@ -5,10 +5,14 @@ class Task < ApplicationRecord
   belongs_to :parent, class_name: "Task", optional: true
   has_many :subtasks, class_name: "Task", foreign_key: :parent_id, inverse_of: :parent
 
+  # Subtarefas vão até 5 níveis abaixo da tarefa de topo.
+  MAX_DEPTH = 5
+
   enum :priority, { none: 0, low: 1, medium: 2, high: 3 }, prefix: true, validate: true
 
   validates :title, presence: true
-  validate :parent_must_be_in_same_list, :subtask_must_be_one_level, if: :parent_id?
+  # Só quando a tarefa ganha pai ou muda de lista: reordenar irmãs não reconfere a árvore.
+  validate :parent_must_be_in_same_list, :parent_must_not_be_descendant, :tree_within_max_depth, if: :parent_changing?
 
   # Subtarefa nova entra na lista da tarefa e no fim da ordem das subtarefas dela.
   def build_subtask(attributes = {})
@@ -43,17 +47,41 @@ class Task < ApplicationRecord
     move_to!(index) if index
   end
 
-    def move_to_list!(new_list)
+  def move_to_list!(new_list)
     transaction do
       update!(list: new_list, position: new_list.next_task_position)
-      subtasks.actives.each { |subtask| subtask.update!(list: new_list) }
+      move_subtasks_to!(new_list)
     end
+  end
+
+  # Nível da tarefa: 0 na de topo, 1 na subtarefa dela, e assim por diante.
+  def depth
+    parent ? parent.depth + 1 : 0
+  end
+
+  def accepts_subtasks?
+    depth < MAX_DEPTH
+  end
+
+  # Quantos níveis de subtarefas ativas há abaixo da tarefa.
+  def subtree_height
+    subtasks.actives.map { |subtask| subtask.subtree_height + 1 }.max || 0
   end
 
   def soft_delete!
     transaction do
       subtasks.actives.each(&:soft_delete!)
       super
+    end
+  end
+
+  protected
+
+  # A árvore inteira acompanha a tarefa, de cima para baixo: cada filha muda depois da mãe.
+  def move_subtasks_to!(new_list)
+    subtasks.actives.each do |subtask|
+      subtask.update!(list: new_list)
+      subtask.move_subtasks_to!(new_list)
     end
   end
 
@@ -68,7 +96,24 @@ class Task < ApplicationRecord
     errors.add(:parent, :invalid) unless parent.list_id == list_id
   end
 
-  def subtask_must_be_one_level
-    errors.add(:parent, :invalid) if parent.parent_id.present? || subtasks.exists?
+  def parent_changing?
+    parent_id? && (new_record? || will_save_change_to_parent_id? || will_save_change_to_list_id?)
+  end
+
+  def parent_must_not_be_descendant
+    ancestor = parent
+    while ancestor
+      return errors.add(:parent, :invalid) if ancestor.id == id
+
+      ancestor = ancestor.parent
+    end
+  end
+
+  # A tarefa e as subtarefas dela, somadas à profundidade do pai novo, cabem nos 5 níveis. Pai já
+  # recusado (ciclo) não tem profundidade para medir.
+  def tree_within_max_depth
+    return if errors.include?(:parent)
+
+    errors.add(:parent, :invalid) if parent.depth + 1 + (new_record? ? 0 : subtree_height) > MAX_DEPTH
   end
 end

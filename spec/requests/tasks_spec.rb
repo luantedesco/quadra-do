@@ -195,12 +195,20 @@ RSpec.describe "Tarefas", type: :request do
       end
     end
 
-    it "abre a subtarefa no painel com o link para a tarefa pai, sem bloco de subtarefas" do
+    it "abre a subtarefa no painel com o link para a tarefa pai e o bloco das subtarefas dela" do
       subtask = create(:task, list:, parent: task)
 
       get task_path(subtask, from: list_path(list)), headers: { "Turbo-Frame" => "task_detail" }
 
       assert_select "#task-detail a[href=?]", task_path(task, from: list_path(list)), text: /Revisar relatório/
+      assert_select "#task-subtasks form input[name='task[parent_id]'][value=?]", subtask.id
+    end
+
+    it "no 5º nível de subtarefa, não oferece criar mais" do
+      deepest = 5.times.reduce(task) { |current, _| create(:task, list:, parent: current) }
+
+      get task_path(deepest), headers: { "Turbo-Frame" => "task_detail" }
+
       assert_select "#task-subtasks", count: 0
     end
   end
