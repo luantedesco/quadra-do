@@ -27,19 +27,47 @@
         <% end %>
       </div>
     </div>
+    <div class="dropdown" id="group-menu">
+      <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="ri-stack-line"></i>
+        <span class="ms-1"><%= t("lists.group.#{@group}") %></span>
+      </button>
+      <div class="dropdown-menu">
+        <h6 class="dropdown-header"><%= t("lists.group.title_menu") %></h6>
+        <% Core::Domain::TaskGroup.keys.each do |group| %>
+          <%= link_to t("lists.group.#{group}"), list_path(@list, group:), class: class_names("dropdown-item", active: group == @group.key) %>
+        <% end %>
+      </div>
+    </div>
   </div>
 
   <%= render "tasks/quick_add", list: @list %>
 
-  <div class="card mb-0">
-    <div class="card-body" id="list-tasks">
-      <% @tasks.each do |task| %>
-        <%= render "lists/task_row", task: %>
-      <% end %>
-      <% if @tasks.empty? %>
-        <p class="text-muted text-center mb-0"><%= t("lists.no_tasks") %></p>
-      <% end %>
-    </div>
+  <div id="list-tasks">
+    <% @sections.each do |section, tasks| %>
+      <div class="<%= class_names("mb-3", "list-section-#{section}": section) %>">
+        <% if section %>
+          <h5 class="m-0 pb-2"><%= t("lists.group.sections.#{@group}.#{section}") %> <span class="text-muted">(<%= tasks.size %>)</span></h5>
+        <% end %>
+        <div class="card mb-0">
+          <div class="card-body">
+            <% tasks.each do |task| %>
+              <%= render "lists/task_row", task: %>
+            <% end %>
+            <% if tasks.empty? %>
+              <p class="text-muted text-center mb-0"><%= t("lists.no_tasks") %></p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <% if @sections.empty? %>
+      <div class="card mb-0">
+        <div class="card-body">
+          <p class="text-muted text-center mb-0"><%= t("lists.no_tasks") %></p>
+        </div>
+      </div>
+    <% end %>
   </div>
 
   <% if @finished_tasks.any? %>

@@ -129,6 +129,35 @@ RSpec.describe "Listas", type: :request do
       end
     end
 
+    describe "agrupar por" do
+      let(:list) { create(:list) }
+
+      it "divide a tabela em seções com título e contagem, marca a opção no menu e a lembra para a lista" do
+        high = create(:task, list:, priority: :high)
+        create(:task, list:, priority: :none)
+
+        get list_path(list, group: "priority")
+
+        assert_select "#list-tasks .list-section-high h5", text: /Alta\s*\(1\)/
+        assert_select "#list-tasks .list-section-high [data-id=?]", high.id
+        assert_select "#list-tasks .list-section-none h5", text: /Nenhuma/
+        assert_select "#list-tasks .list-section-medium", count: 0
+        assert_select "#group-menu .dropdown-item.active", text: "Prioridade"
+
+        get list_path(list)
+
+        assert_select "#list-tasks .list-section-high"
+      end
+
+      it "mantém a ordenação escolhida ao trocar o agrupamento" do
+        get list_path(list, sort: "title")
+        get list_path(list, group: "deadline")
+
+        assert_select "#sort-menu .dropdown-item.active", text: "Título"
+        assert_select "#group-menu .dropdown-item.active", text: "Prazo"
+      end
+    end
+
     it "avisa quando a lista não tem tarefa aberta" do
       get list_path(create(:list))
 

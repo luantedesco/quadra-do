@@ -1,5 +1,5 @@
 class ListsController < ApplicationController
-  before_action :remember_sort, only: :show
+  before_action :remember_sort, :remember_group, only: :show
 
   service_actions :index, :show, :new, :create, :edit, :update, :destroy
 
@@ -33,5 +33,12 @@ class ListsController < ApplicationController
     else
       cookies.delete("list_direction_#{params[:id]}")
     end
+  end
+
+  # Agrupamento escolhido no menu "Agrupar por", lembrado por lista em cookie.
+  def remember_group
+    return unless Core::Domain::TaskGroup.valid?(params[:group])
+
+    cookies["list_group_#{params[:id]}"] = { value: params[:group], expires: 1.year }
   end
 end

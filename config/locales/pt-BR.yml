@@ -22,6 +22,24 @@ pt-BR:
     destroy_confirm: "Apagar a lista e as tarefas dela?"
     edit: "Editar lista"
     finished: "Concluídas"
+    group:
+      deadline: "Prazo"
+      none: "Nenhum"
+      priority: "Prioridade"
+      sections:
+        deadline:
+          later: "Depois"
+          next_7_days: "Próximos 7 dias"
+          no_deadline: "Sem prazo"
+          overdue: "Atrasadas"
+          today: "Hoje"
+          tomorrow: "Amanhã"
+        priority:
+          high: "Alta"
+          low: "Baixa"
+          medium: "Média"
+          none: "Nenhuma"
+      title_menu: "Agrupar por"
     new: "Nova lista"
     no_color: "Sem cor"
     no_tasks: "Nenhuma tarefa aberta nesta lista."
