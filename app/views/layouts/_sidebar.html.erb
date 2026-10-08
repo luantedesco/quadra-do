@@ -24,8 +24,8 @@
 
     <ul class="side-nav side-nav-bottom mt-auto" id="side-nav-bottom">
       <li class="side-nav-item">
-        <a href="#" class="side-nav-link">
-          <i class="ri-moon-line" id="theme-icon-toggle"></i>
+        <a href="#" class="side-nav-link" data-action="click->theme#toggle:prevent">
+          <i class="<%= theme_preference == "dark" ? "ri-sun-line" : "ri-moon-line" %>" id="theme-icon-toggle"></i>
           <span><%= t("sidebar.theme_mode") %></span>
         </a>
       </li>

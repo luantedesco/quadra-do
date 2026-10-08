@@ -18,12 +18,19 @@ module ApplicationHelper
       navigation_items.find { |item| navigation_item_active?(item) }&.dig(:label)
   end
 
-  # Atributos que o Hyper lê no <html>: layout vertical, tema claro e menu só com ícones.
+  # Tema escolhido pelo usuário (cookie gravado pelo controller theme), renderizado no <html> para a
+  # página já chegar com ele.
+  def theme_preference
+    %w[light dark].include?(cookies[:theme]) ? cookies[:theme] : "light"
+  end
+
+  # Atributos que o Hyper lê no <html>: layout vertical, tema escolhido e menu só com ícones.
   def document_attributes
     tag.attributes(lang: I18n.locale, data: {
+      controller: "theme",
       layout: "vertical",
-      bs_theme: "light",
-      menu_color: "light",
+      bs_theme: theme_preference,
+      menu_color: theme_preference,
       layout_mode: "fluid",
       layout_position: "fixed",
       sidenav_size: "condensed"

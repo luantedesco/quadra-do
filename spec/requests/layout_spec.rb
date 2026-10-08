@@ -22,4 +22,24 @@ RSpec.describe "Layout", type: :request do
 
     assert_select ".side-nav-bottom .side-nav-link", text: "Tema"
   end
+
+  describe "tema" do
+    it "abre no tema guardado no cookie, com o ícone para voltar ao claro" do
+      cookies[:theme] = "dark"
+
+      get root_path
+
+      assert_select "html[data-bs-theme=dark][data-menu-color=dark][data-controller=theme]"
+      assert_select "#theme-icon-toggle.ri-sun-line"
+    end
+
+    it "abre no claro sem cookie ou com um valor que não é tema" do
+      cookies[:theme] = "azul"
+
+      get root_path
+
+      assert_select "html[data-bs-theme=light][data-menu-color=light]"
+      assert_select "#theme-icon-toggle.ri-moon-line"
+    end
+  end
 end

@@ -1,0 +1,7 @@
+/* Durante a troca de tema nada anima: o fundo e o texto do Hyper trocam na hora, e os elementos com
+   transição de hover e foco (botões, campos, logo) ficariam deslizando para trás. */
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition: none !important;
+}
