@@ -1,5 +1,8 @@
 <div class="row justify-content-sm-between py-1" data-id="<%= task.id %>">
   <div class="<%= class_names("col-sm-6 mb-2 mb-sm-0 text-truncate", "text-decoration-line-through text-muted": task.finished_at) %>">
+    <% if local_assigns[:draggable] %>
+      <i class="ri-draggable text-muted task-drag-handle me-1" title="<%= t("lists.drag") %>"></i>
+    <% end %>
     <%= task.title %>
   </div>
   <div class="col-sm-6">

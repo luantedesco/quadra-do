@@ -48,4 +48,32 @@ RSpec.describe Core::Domain::TaskGroup do
 
     expect(section_titles("qualquer")).to eq([ [ nil, %w[a b] ] ])
   end
+
+  describe "#attributes_for" do
+    it "na prioridade, a seção é a prioridade" do
+      expect(described_class.new("priority").attributes_for("medium", build(:task))).to eq(priority: "medium")
+    end
+
+    it "em Hoje e Amanhã troca só o dia, mantendo o horário; sem prazo antes, 23:59" do
+      travel_to Time.zone.parse("2026-10-08 10:00") do
+        group = described_class.new("deadline")
+        with_time = build(:task, deadline: Time.zone.parse("2026-10-20 14:30"))
+
+        expect(group.attributes_for("tomorrow", with_time)).to eq(deadline: Time.zone.parse("2026-10-09 14:30"))
+        expect(group.attributes_for("today", build(:task))).to eq(deadline: Time.zone.parse("2026-10-08 23:59"))
+      end
+    end
+
+    it "em Sem prazo tira o prazo" do
+      expect(described_class.new("deadline").attributes_for("no_deadline", build(:task, deadline: 1.day.from_now))).to eq(deadline: nil)
+    end
+
+    it "faixa de prazo, seção desconhecida e sem agrupamento não recebem tarefa" do
+      expect([
+        described_class.new("deadline").attributes_for("overdue", build(:task)),
+        described_class.new("priority").attributes_for("urgente", build(:task)),
+        described_class.new("none").attributes_for(nil, build(:task))
+      ]).to all(be_nil)
+    end
+  end
 end

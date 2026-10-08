@@ -20,6 +20,7 @@ pt-BR:
         other: "Tarefas"
   lists:
     destroy_confirm: "Apagar a lista e as tarefas dela?"
+    drag: "Arrastar para reordenar"
     edit: "Editar lista"
     finished: "Concluídas"
     group:
@@ -59,6 +60,8 @@ pt-BR:
     theme_mode: "Tema"
   tasks:
     add_task: "Adicionar tarefa"
+    move:
+      not_droppable: "Esta seção não recebe tarefa."
     priorities:
       high: "Alta"
       low: "Baixa"

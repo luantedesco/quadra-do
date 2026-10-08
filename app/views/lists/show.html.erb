@@ -43,16 +43,16 @@
 
   <%= render "tasks/quick_add", list: @list %>
 
-  <div id="list-tasks">
+  <div id="list-tasks" data-controller="task-sort" data-task-sort-group-value="<%= @group %>" data-task-sort-reorder-value="<%= @sort.manual? %>">
     <% @sections.each do |section, tasks| %>
       <div class="<%= class_names("mb-3", "list-section-#{section}": section) %>">
         <% if section %>
           <h5 class="m-0 pb-2"><%= t("lists.group.sections.#{@group}.#{section}") %> <span class="text-muted">(<%= tasks.size %>)</span></h5>
         <% end %>
         <div class="card mb-0">
-          <div class="card-body">
+          <div class="card-body" data-task-sort-target="section" data-section="<%= section %>" data-droppable="<%= @group.droppable?(section) %>">
             <% tasks.each do |task| %>
-              <%= render "lists/task_row", task: %>
+              <%= render "lists/task_row", task:, draggable: true %>
             <% end %>
             <% if tasks.empty? %>
               <p class="text-muted text-center mb-0"><%= t("lists.no_tasks") %></p>

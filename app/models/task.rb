@@ -8,7 +8,7 @@ class Task < ApplicationRecord
   enum :priority, { none: 0, low: 1, medium: 2, high: 3 }, prefix: true
 
   validates :title, presence: true
-  validate :parent_must_be_in_same_list, :subtask_must_be_one_level, if: :parent
+  validate :parent_must_be_in_same_list, :subtask_must_be_one_level, if: :parent_id?
 
   def finish!
     update!(finished_at: Time.current)
@@ -26,7 +26,15 @@ class Task < ApplicationRecord
     end
   end
 
-  def move_to_list!(new_list)
+  # Encaixa a tarefa logo depois de `previous` ou, sem ele, logo antes de `following`; sem nenhum dos
+  # dois, a posição não muda.
+  def move_beside!(previous: nil, following: nil)
+    ids = siblings.where.not(id:).pluck(:id)
+    index = previous ? ids.index(previous.id)&.succ : following && ids.index(following.id)
+    move_to!(index) if index
+  end
+
+    def move_to_list!(new_list)
     transaction do
       update!(list: new_list, position: new_list.next_task_position)
       subtasks.actives.each { |subtask| subtask.update!(list: new_list) }
@@ -42,8 +50,9 @@ class Task < ApplicationRecord
 
   private
 
+  # Só as abertas: a concluída sai da ordem da lista e mantém a posição que tinha.
   def siblings
-    list.tasks.actives.where(parent_id:)
+    list.tasks.actives.where(parent_id:, finished_at: nil)
   end
 
   def parent_must_be_in_same_list
