@@ -4,6 +4,8 @@
     <i class="ri-menu-line"></i>
   </button>
 
+  <%= render "tasks/quick_add", list: @list %>
+
   <div class="card mb-0">
     <div class="card-body" id="list-tasks">
       <% @tasks.each do |task| %>

@@ -8,6 +8,9 @@ pt-BR:
       list:
         color: "Cor"
         name: "Nome"
+      task:
+        deadline: "Prazo"
+        title: "Título"
     models:
       list:
         one: "Lista"
@@ -27,6 +30,7 @@ pt-BR:
     menu: "Menu"
     theme_mode: "Tema"
   tasks:
+    add_task: "Adicionar tarefa"
     priorities:
       high: "Alta"
       low: "Baixa"

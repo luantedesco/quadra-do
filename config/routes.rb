@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
   root "lists#index"
   resources :lists, except: :index
+  resources :tasks, only: :create
   resource :sidebar, only: [], controller: "sidebar" do
     patch :move
   end
