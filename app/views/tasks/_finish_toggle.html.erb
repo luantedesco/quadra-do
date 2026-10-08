@@ -1,0 +1,3 @@
+<%= form_with url: toggle_finish_task_path(task), method: :patch, class: "d-inline", data: { controller: "auto-submit" } do %>
+  <%= check_box_tag :finished, "1", task.finished_at.present?, id: dom_id(task, id_prefix), class: "form-check-input me-1", aria: { label: t("tasks.finish") }, data: { action: "change->auto-submit#submit" } %>
+<% end %>

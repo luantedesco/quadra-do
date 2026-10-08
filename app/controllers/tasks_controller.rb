@@ -2,7 +2,7 @@ class TasksController < ApplicationController
   layout -> { turbo_frame_request? ? "turbo_rails/frame" : "application" }
   helper_method :task_return_path
 
-  service_actions :show, :create, :move
+  service_actions :show, :create, :move, :toggle_finish
 
   private
 

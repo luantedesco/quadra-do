@@ -61,6 +61,7 @@ pt-BR:
   tasks:
     add_task: "Adicionar tarefa"
     close: "Fechar"
+    finish: "Concluída"
     move:
       not_droppable: "Esta seção não recebe tarefa."
     priorities:

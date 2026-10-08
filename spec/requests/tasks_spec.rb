@@ -90,6 +90,37 @@ RSpec.describe "Tarefas", type: :request do
     end
   end
 
+  describe "concluir e reabrir" do
+    let(:list) { create(:list) }
+    let(:task) { create(:task, list:) }
+
+    it "conclui a tarefa aberta e responde com o refresh da página, sem o request-id" do
+      patch toggle_finish_task_path(task), as: :turbo_stream
+
+      expect(task.reload.finished_at).to be_present
+      assert_turbo_stream action: :refresh
+      expect(response.body).not_to include("request-id")
+    end
+
+    it "reabre a tarefa concluída" do
+      task.finish!
+
+      patch toggle_finish_task_path(task), as: :turbo_stream
+
+      expect(task.reload.finished_at).to be_nil
+    end
+
+    it "põe o checkbox na linha e no painel, marcado na concluída" do
+      task.finish!
+
+      get list_path(list)
+      assert_select "#finished-tasks form[action=?] input[type=checkbox][checked]", toggle_finish_task_path(task)
+
+      get task_path(task), headers: { "Turbo-Frame" => "task_detail" }
+      assert_select "#task-detail form[action=?] input[type=checkbox][checked]", toggle_finish_task_path(task)
+    end
+  end
+
   describe "arrastar" do
     include ActiveSupport::Testing::TimeHelpers
 

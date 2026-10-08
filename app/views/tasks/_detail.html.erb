@@ -7,6 +7,11 @@
       <% end %>
     </div>
 
+    <div class="form-check mb-2">
+      <%= render "tasks/finish_toggle", task:, id_prefix: :detail_finished %>
+      <label class="form-check-label" for="<%= dom_id(task, :detail_finished) %>"><%= t("tasks.finish") %></label>
+    </div>
+
     <h4 class="mt-0"><%= task.title %></h4>
 
     <ul class="list-inline font-13 mb-3">

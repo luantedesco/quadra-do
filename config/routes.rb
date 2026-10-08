@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   resources :lists, except: :index
   resources :tasks, only: %i[show create] do
     patch :move, on: :member
+    patch :toggle_finish, on: :member
   end
   resource :sidebar, only: [], controller: "sidebar" do
     patch :move

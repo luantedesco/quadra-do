@@ -1,0 +1,2 @@
+<%# Sem o request-id, o Turbo não ignora o refresh como sendo da própria página, e a tela atualiza. %>
+<%= turbo_stream.refresh(request_id: nil) %>
