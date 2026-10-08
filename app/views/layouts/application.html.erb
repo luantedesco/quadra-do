@@ -25,6 +25,9 @@
   <body>
     <div class="wrapper">
       <%= render "layouts/sidebar" %>
+      <button class="btn btn-light sidebar-mobile-toggle d-md-none" data-action="sidebar#toggle" aria-label="<%= t("sidebar.menu") %>">
+        <i class="ri-menu-line"></i>
+      </button>
       <div class="content-page">
         <div class="content">
           <div class="container-fluid">

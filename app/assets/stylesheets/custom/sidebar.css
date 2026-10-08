@@ -42,3 +42,30 @@ html[data-sidenav-size="condensed"]:not([data-layout="topnav"]) .wrapper .conten
   font-weight: 700;
   color: var(--ct-menu-item-active-color);
 }
+
+/* Sem topbar, o botão que abre a gaveta no mobile flutua no canto, e o conteúdo desce para não
+   ficar embaixo dele. */
+.sidebar-mobile-toggle {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 1001;
+  padding: 4px 10px;
+  font-size: 1.25rem;
+}
+
+@media (max-width: 767.98px) {
+  .content-page {
+    padding-top: 56px;
+  }
+
+  /* O servidor renderiza o menu só com ícones sem saber a largura da tela; até o controller sidebar
+     trocar para a gaveta (full), a sidebar fica escondida e o conteúdo ocupa a tela, sem piscar. */
+  html:not([data-sidenav-size="full"]):not([data-layout="topnav"]) .wrapper .leftside-menu {
+    display: none;
+  }
+
+  html:not([data-sidenav-size="full"]):not([data-layout="topnav"]) .wrapper .content-page {
+    margin-left: 0;
+  }
+}

@@ -27,7 +27,8 @@ module ApplicationHelper
   # Atributos que o Hyper lê no <html>: layout vertical, tema escolhido e menu só com ícones.
   def document_attributes
     tag.attributes(lang: I18n.locale, data: {
-      controller: "theme",
+      controller: "theme sidebar",
+      action: "resize@window->sidebar#adjust turbo:visit@document->sidebar#close",
       layout: "vertical",
       bs_theme: theme_preference,
       menu_color: theme_preference,

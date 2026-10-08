@@ -17,6 +17,14 @@ RSpec.describe "Layout", type: :request do
     assert_select "link[rel=stylesheet][href^='/assets/application-']"
   end
 
+  it "liga o menu à gaveta do celular, com o botão que a abre e o que a fecha" do
+    get root_path
+
+    assert_select "html[data-controller~=sidebar][data-action*='resize@window->sidebar#adjust']"
+    assert_select "button.sidebar-mobile-toggle[data-action='sidebar#toggle'][aria-label=Menu]"
+    assert_select ".leftside-menu .button-close-fullsidebar[data-action='click->sidebar#close']"
+  end
+
   it "põe o tema no pé do menu" do
     get root_path
 
@@ -29,7 +37,7 @@ RSpec.describe "Layout", type: :request do
 
       get root_path
 
-      assert_select "html[data-bs-theme=dark][data-menu-color=dark][data-controller=theme]"
+      assert_select "html[data-bs-theme=dark][data-menu-color=dark][data-controller~=theme]"
       assert_select "#theme-icon-toggle.ri-sun-line"
     end
 
