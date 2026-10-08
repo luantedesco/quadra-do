@@ -25,6 +25,13 @@ pt-BR:
     new: "Nova lista"
     no_color: "Sem cor"
     no_tasks: "Nenhuma tarefa aberta nesta lista."
+    sort:
+      created: "Criação"
+      deadline: "Prazo"
+      manual: "Personalizada"
+      priority: "Prioridade"
+      title: "Título"
+      title_menu: "Ordenar por"
   panel:
     empty: "Nenhuma lista ainda. Crie a primeira para organizar suas tarefas."
   sidebar:

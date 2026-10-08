@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
     actions.each do |action|
       define_method(action) do
         service = "Web::#{controller_name.camelize}::#{action.to_s.camelize}Service".constantize
-        respond_attempt(service.new(params:).call)
+        respond_attempt(service.new(params:, cookies:).call)
       end
     end
   end

@@ -78,6 +78,32 @@ RSpec.describe "Listas", type: :request do
       assert_select "#finished-tasks", count: 0
     end
 
+    describe "ordenar por" do
+      let(:list) { create(:list) }
+      let!(:low) { create(:task, list:, title: "Baixa", position: 0, priority: :low) }
+      let!(:high) { create(:task, list:, title: "Alta", position: 1, priority: :high) }
+
+      it "ordena as abertas pela opção escolhida, marca a opção no menu e a lembra para a lista" do
+        get list_path(list, sort: "priority")
+
+        assert_select "#list-tasks [data-id]:nth-of-type(1)[data-id=?]", high.id
+        assert_select "#sort-menu .dropdown-item.active", text: "Prioridade"
+        expect(cookies["list_sort_#{list.id}"]).to eq("priority")
+
+        get list_path(list)
+
+        assert_select "#list-tasks [data-id]:nth-of-type(1)[data-id=?]", high.id
+      end
+
+      it "abre na ordem personalizada sem escolha e ignora opção desconhecida" do
+        get list_path(list, sort: "qualquer")
+
+        assert_select "#list-tasks [data-id]:nth-of-type(1)[data-id=?]", low.id
+        assert_select "#sort-menu .dropdown-item.active", text: "Personalizada"
+        expect(cookies["list_sort_#{list.id}"]).to be_blank
+      end
+    end
+
     it "avisa quando a lista não tem tarefa aberta" do
       get list_path(create(:list))
 

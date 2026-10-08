@@ -1,14 +1,15 @@
 module Web
   module Queries
     module Lists
-      # Tarefas de topo de uma lista na visão tabela: abertas na ordem da lista (`:open`) ou concluídas
+      # Tarefas de topo de uma lista na visão tabela: abertas na ordem escolhida (`:open`) ou concluídas
       # da mais recente para a mais antiga (`:finished`).
       class TasksQuery < Base
-        attr_accessor :list, :scope
+        attr_accessor :list, :task_sort, :scope
 
-        def initialize(list:, scope: :open)
+        def initialize(list:, task_sort: Core::Domain::TaskSort.new(nil), scope: :open)
           super()
           self.list = list
+          self.task_sort = task_sort
           self.scope = scope
         end
 
@@ -23,7 +24,7 @@ module Web
         end
 
         def sort
-          self.collection = scope == :finished ? collection.reorder(finished_at: :desc) : collection.reorder(:position)
+          self.collection = scope == :finished ? collection.reorder(finished_at: :desc) : collection.reorder(task_sort.order)
         end
       end
     end

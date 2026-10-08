@@ -1,8 +1,22 @@
 <% content_for :page_title, @list.name %>
 <div class="container-fluid">
-  <button class="btn btn-light d-md-none mb-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#tasks-panel" aria-controls="tasks-panel" aria-label="<%= List.model_name.human(count: 2) %>">
-    <i class="ri-menu-line"></i>
-  </button>
+  <div class="d-flex align-items-center gap-2 mb-2">
+    <button class="btn btn-light d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tasks-panel" aria-controls="tasks-panel" aria-label="<%= List.model_name.human(count: 2) %>">
+      <i class="ri-menu-line"></i>
+    </button>
+    <div class="dropdown" id="sort-menu">
+      <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="ri-sort-desc"></i>
+        <span class="ms-1"><%= t("lists.sort.#{@sort}") %></span>
+      </button>
+      <div class="dropdown-menu">
+        <h6 class="dropdown-header"><%= t("lists.sort.title_menu") %></h6>
+        <% Core::Domain::TaskSort.keys.each do |sort| %>
+          <%= link_to t("lists.sort.#{sort}"), list_path(@list, sort:), class: class_names("dropdown-item", active: sort == @sort.key) %>
+        <% end %>
+      </div>
+    </div>
+  </div>
 
   <%= render "tasks/quick_add", list: @list %>
 

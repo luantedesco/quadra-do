@@ -3,10 +3,11 @@ module Web
   # que o controller expõe à view por respond_attempt; erro de regra ou de validação volta em `error`
   # em vez de estourar no controller.
   class Base
-    attr_accessor :params, :instance, :error
+    attr_accessor :params, :cookies, :instance, :error
 
-    def initialize(params:)
+    def initialize(params:, cookies: {})
       self.params = params
+      self.cookies = cookies
       self.instance = nil
       self.error = nil
     end

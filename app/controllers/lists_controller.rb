@@ -1,4 +1,6 @@
 class ListsController < ApplicationController
+  before_action :remember_sort, only: :show
+
   service_actions :index, :show, :new, :create, :edit, :update, :destroy
 
   private
@@ -18,5 +20,12 @@ class ListsController < ApplicationController
 
   def destroy_redirect
     redirect_to root_path, status: :see_other
+  end
+
+  # Ordem escolhida no menu "Ordenar por", lembrada por lista em cookie.
+  def remember_sort
+    return unless Core::Domain::TaskSort.valid?(params[:sort])
+
+    cookies["list_sort_#{params[:id]}"] = { value: params[:sort], expires: 1.year }
   end
 end
