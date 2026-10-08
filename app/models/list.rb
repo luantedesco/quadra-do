@@ -17,6 +17,15 @@ class List < ApplicationRecord
     tasks.build(attributes).tap { |task| task.position = position }
   end
 
+  # Leva a lista para a posição pedida no painel e renumera as listas ativas a partir de 0.
+  def move_to!(position)
+    transaction do
+      ordered = List.actives.order(:position).where.not(id:).to_a
+      ordered.insert(position.clamp(0, ordered.size), self)
+      ordered.each_with_index { |list, index| list.update!(position: index) }
+    end
+  end
+
   # Apaga também as tarefas; cada tarefa de topo leva as subtarefas dela.
   def soft_delete!
     transaction do

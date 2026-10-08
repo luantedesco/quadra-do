@@ -8,9 +8,9 @@
       <button type="button" class="btn-close d-md-none" data-bs-dismiss="offcanvas" data-bs-target="#tasks-panel" aria-label="Close"></button>
     </div>
   </div>
-  <ul class="list-unstyled px-2 pb-3 m-0" id="tasks-panel-lists">
+  <ul class="list-unstyled px-2 pb-3 m-0" id="tasks-panel-lists" data-controller="sidebar-tree">
     <% Web::Queries::Lists::IndexQuery.new.call.each do |list| %>
-      <li class="<%= class_names("tasks-panel-item d-flex align-items-center", active: @list&.persisted? && @list.id == list.id) %>">
+      <li class="<%= class_names("tasks-panel-item d-flex align-items-center", active: @list&.persisted? && @list.id == list.id) %>" data-id="<%= list.id %>">
         <%= link_to list_path(list), class: "flex-grow-1 text-truncate" do %>
           <%= tag.i(class: class_names("ri-circle-fill font-10 me-2", "text-muted": list.color.blank?), style: ("color: #{list.color};" if list.color.present?)) %>
           <%= list.name %>

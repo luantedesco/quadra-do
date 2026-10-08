@@ -22,6 +22,28 @@ RSpec.describe List, type: :model do
     end
   end
 
+  describe "#move_to!" do
+    it "leva a lista para a posição pedida e renumera as ativas a partir de 0, sem mexer nas apagadas" do
+      lists = Array.new(3) { |index| create(:list, position: index) }
+      deleted = create(:list, position: 9)
+      deleted.soft_delete!
+
+      lists.last.move_to!(0)
+
+      expect(described_class.actives.order(:position).pluck(:id)).to eq(lists.values_at(2, 0, 1).map(&:id))
+      expect(described_class.actives.order(:position).pluck(:position)).to eq([ 0, 1, 2 ])
+      expect(deleted.reload.position).to eq(9)
+    end
+
+    it "limita a posição ao fim do painel" do
+      lists = Array.new(2) { |index| create(:list, position: index) }
+
+      lists.first.move_to!(99)
+
+      expect(lists.first.reload.position).to eq(1)
+    end
+  end
+
   describe "#soft_delete!" do
     it "apaga também as tarefas e as subtarefas delas" do
       list = create(:list)

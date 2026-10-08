@@ -7,6 +7,8 @@ pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
 pin_all_from "app/javascript/controllers", under: "controllers"
 pin_all_from "app/javascript/lib", under: "lib"
 
+pin "@rails/request.js", to: "@rails--request.js.js" # @0.0.13
+
 # Nome com .esm: a gem bootstrap (fonte do SCSS) também expõe um bootstrap.js, em UMD, nos asset paths.
 pin "bootstrap", to: "bootstrap.esm.js" # @5.3.8
 pin "jquery" # @3.7.1
