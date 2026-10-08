@@ -293,7 +293,7 @@ RSpec.describe "Tarefas", type: :request do
 
       get list_path(list, sort: "title", group: "deadline")
 
-      assert_select "#list-tasks[data-controller=task-sort][data-task-sort-reorder-value=false][data-task-sort-group-value=deadline][data-task-sort-list-value=?]", list.id
+      assert_select "#list-tasks[data-controller~=task-sort][data-task-sort-reorder-value=false][data-task-sort-group-value=deadline][data-task-sort-list-value=?]", list.id
       assert_select "#list-tasks .task-drag-handle", count: 2
       assert_select "#finished-tasks .task-drag-handle", count: 0
       assert_select "#list-tasks [data-section=no_deadline][data-droppable=true]"

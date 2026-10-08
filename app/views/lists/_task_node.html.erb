@@ -1,0 +1,12 @@
+<%# Tarefa na tabela com as subtarefas abertas dela, recolhíveis; o nó inteiro se move ao arrastar. %>
+<% children = subtasks.fetch(task.id, []) %>
+<div class="task-node" data-id="<%= task.id %>">
+  <%= render "lists/task_row", task:, depth:, children:, expanded: expanded.include?(task.id), draggable: draggable && depth.zero? %>
+  <% if children.any? %>
+    <div class="<%= class_names("collapse", show: expanded.include?(task.id)) %>" id="subtasks-<%= task.id %>" data-task-id="<%= task.id %>">
+      <% children.each do |child| %>
+        <%= render "lists/task_node", task: child, subtasks:, expanded:, depth: depth + 1, draggable: %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

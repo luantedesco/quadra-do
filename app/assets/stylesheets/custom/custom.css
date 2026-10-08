@@ -14,3 +14,20 @@ turbo-frame#task_detail {
 turbo-frame#task_detail:empty {
   display: none;
 }
+
+/* Seta das subtarefas na tabela: aponta para a direita recolhida e para baixo aberta; tarefa sem
+   subtarefas guarda o mesmo espaço, para os títulos alinharem. */
+.subtask-toggle,
+.subtask-toggle-spacer {
+  display: inline-block;
+  width: 1.1rem;
+}
+
+.subtask-toggle i {
+  display: inline-block;
+  transition: transform 0.15s;
+}
+
+.subtask-toggle[aria-expanded="true"] i {
+  transform: rotate(90deg);
+}

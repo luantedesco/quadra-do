@@ -36,23 +36,77 @@ RSpec.describe "Listas", type: :request do
       assert_select "#tasks-panel-lists li.active a[href=?]", list_path(casa)
     end
 
-    it "mostra as tarefas abertas de topo na ordem, com prazo e prioridade, sem subtarefas, concluídas e apagadas" do
+    it "mostra as tarefas abertas de topo na ordem, com prazo e prioridade, sem concluídas e apagadas" do
       list = create(:list)
       second = create(:task, list:, title: "Comprar café", position: 1, priority: :high, deadline: Time.zone.parse("2026-10-08 14:00"))
       first = create(:task, list:, title: "Revisar relatório", position: 0)
-      create(:task, list:, title: "Subtarefa", parent: first, position: 2)
       create(:task, list:, title: "Concluída", position: 3, finished_at: Time.current)
       create(:task, list:, title: "Apagada", position: 4).soft_delete!
 
       get list_path(list)
 
-      assert_select "#list-tasks [data-id]", count: 2
-      assert_select "#list-tasks [data-id]:nth-of-type(1)[data-id=?]", first.id
+      assert_select "#list-tasks .card-body > [data-id]", count: 2
+      assert_select "#list-tasks .card-body > [data-id]:nth-of-type(1)[data-id=?]", first.id
       assert_select "#list-tasks [data-id=?]", second.id do
         assert_select ".ri-calendar-line"
         assert_select ".badge.badge-danger-lighten", text: "Alta"
       end
       assert_select "#list-tasks [data-id=?] .badge", first.id, count: 0
+    end
+
+    describe "subtarefas na tabela" do
+      let(:list) { create(:list) }
+      let!(:task) { create(:task, list:, title: "Revisar relatório") }
+      let!(:second) { create(:task, list:, parent: task, title: "Passo B", position: 1) }
+      let!(:first) { create(:task, list:, parent: task, title: "Passo A", position: 0) }
+      let!(:nested) { create(:task, list:, parent: first, title: "Detalhe") }
+
+      it "aparecem recolhidas sob a tarefa, na ordem, com a seta para mostrar" do
+        create(:task, list:, parent: task, title: "Feita", finished_at: Time.current)
+
+        get list_path(list)
+
+        assert_select "#list-tasks .card-body > [data-id]", count: 1
+        assert_select "[data-id=?] a.subtask-toggle[aria-expanded=false][href=?]", task.id, "#subtasks-#{task.id}"
+        assert_select "#subtasks-#{task.id}.collapse:not(.show) > [data-id]", count: 2
+        assert_select "#subtasks-#{task.id} > [data-id]:nth-of-type(1)[data-id=?]", first.id
+        assert_select "#subtasks-#{first.id} > [data-id=?]", nested.id
+        assert_select "#list-tasks a", text: "Feita", count: 0
+      end
+
+      it "abre as que estão guardadas no cookie" do
+        cookies[:expanded_tasks] = [ task.id, first.id ].join(".")
+
+        get list_path(list)
+
+        assert_select "#subtasks-#{task.id}.collapse.show"
+        assert_select "#subtasks-#{first.id}.collapse.show"
+        assert_select "[data-id=?] a.subtask-toggle[aria-expanded=true]", task.id
+      end
+
+      it "não mostra as subtarefas de uma tarefa concluída" do
+        task.finish!
+
+        get list_path(list)
+
+        assert_select "#list-tasks a", text: "Passo A", count: 0
+      end
+
+      it "agrupada, a subtarefa fica sob a tarefa, na seção dela" do
+        first.update!(priority: :high)
+
+        get list_path(list, group: "priority")
+
+        assert_select "#list-tasks .list-section-high", count: 0
+        assert_select "#list-tasks .list-section-none #subtasks-#{task.id} [data-id=?]", first.id
+      end
+
+      it "só a tarefa de topo tem a alça de arrastar" do
+        get list_path(list)
+
+        assert_select "#list-tasks .task-drag-handle", count: 1
+        assert_select "[data-id=?] > .row .task-drag-handle", task.id
+      end
     end
 
     it "mostra as concluídas de topo numa seção recolhida no fim, da mais recente para a mais antiga" do
