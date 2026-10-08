@@ -21,6 +21,7 @@ pt-BR:
   lists:
     destroy_confirm: "Apagar a lista e as tarefas dela?"
     edit: "Editar lista"
+    finished: "Concluídas"
     new: "Nova lista"
     no_color: "Sem cor"
     no_tasks: "Nenhuma tarefa aberta nesta lista."

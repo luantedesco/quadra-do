@@ -55,6 +55,29 @@ RSpec.describe "Listas", type: :request do
       assert_select "#list-tasks [data-id=?] .badge", first.id, count: 0
     end
 
+    it "mostra as concluídas de topo numa seção recolhida no fim, da mais recente para a mais antiga" do
+      list = create(:list)
+      older = create(:task, list:, title: "Antiga", finished_at: 2.days.ago)
+      newer = create(:task, list:, title: "Recente", finished_at: 1.day.ago)
+      create(:task, list:, title: "Subtarefa concluída", parent: older, finished_at: 1.hour.ago)
+      create(:task, list:, title: "Aberta")
+
+      get list_path(list)
+
+      assert_select "#finished-tasks a[aria-expanded=false]", text: /Concluídas\s*\(2\)/
+      assert_select "#finished-tasks-body.collapse:not(.show) [data-id]", count: 2
+      assert_select "#finished-tasks-body [data-id]:nth-of-type(1)[data-id=?] .text-decoration-line-through", newer.id
+    end
+
+    it "não mostra a seção de concluídas quando não há nenhuma" do
+      list = create(:list)
+      create(:task, list:)
+
+      get list_path(list)
+
+      assert_select "#finished-tasks", count: 0
+    end
+
     it "avisa quando a lista não tem tarefa aberta" do
       get list_path(create(:list))
 

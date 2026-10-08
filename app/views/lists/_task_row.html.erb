@@ -1,5 +1,5 @@
 <div class="row justify-content-sm-between py-1" data-id="<%= task.id %>">
-  <div class="col-sm-6 mb-2 mb-sm-0 text-truncate">
+  <div class="<%= class_names("col-sm-6 mb-2 mb-sm-0 text-truncate", "text-decoration-line-through text-muted": task.finished_at) %>">
     <%= task.title %>
   </div>
   <div class="col-sm-6">
