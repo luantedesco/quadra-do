@@ -69,3 +69,42 @@ html[data-sidenav-size="condensed"]:not([data-layout="topnav"]) .wrapper .conten
     margin-left: 0;
   }
 }
+
+/* Painel de Tarefas: segunda coluna fixa ao lado do menu só com ícones, com as listas (como no
+   TickTick). Abaixo de 768px vira o offcanvas do Bootstrap, aberto pelo botão da lista. */
+@media (min-width: 768px) {
+  .tasks-panel {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: var(--ct-leftbar-width-sm);
+    width: 260px;
+    overflow-y: auto;
+    background-color: var(--ct-secondary-bg);
+    border-right: 1px solid var(--ct-border-color);
+    z-index: 999;
+  }
+
+  html:not([data-layout="topnav"]) .wrapper .content-page.with-tasks-panel {
+    margin-left: calc(var(--ct-leftbar-width-sm) + 260px);
+  }
+}
+
+.tasks-panel-item {
+  border-radius: 4px;
+}
+
+.tasks-panel-item > a {
+  padding: 6px 8px;
+  color: var(--ct-body-color);
+}
+
+.tasks-panel-item:hover,
+.tasks-panel-item.active {
+  background-color: var(--ct-tertiary-bg);
+}
+
+.tasks-panel-item.active > a {
+  color: var(--ct-primary);
+  font-weight: 600;
+}

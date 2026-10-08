@@ -4,6 +4,8 @@ pt-BR:
       task:
         one: "Tarefa"
         other: "Tarefas"
+  panel:
+    empty: "Nenhuma lista ainda. Crie a primeira para organizar suas tarefas."
   sidebar:
     menu: "Menu"
     theme_mode: "Tema"

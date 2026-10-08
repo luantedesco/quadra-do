@@ -3,8 +3,9 @@ module Web
     class IndexService < Base
       private
 
-      def set_response
-        super.merge(lists: Web::Queries::Lists::IndexQuery.new.call)
+      # A raiz abre a primeira lista do painel; sem nenhuma, a tela convida a criar.
+      def run!
+        self.instance = Web::Queries::Lists::IndexQuery.new.call.first
       end
     end
   end

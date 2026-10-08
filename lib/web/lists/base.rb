@@ -6,6 +6,10 @@ module Web
       def klass
         List
       end
+
+      def set_response
+        super.merge(list: instance)
+      end
     end
   end
 end

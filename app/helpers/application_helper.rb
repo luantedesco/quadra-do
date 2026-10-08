@@ -1,10 +1,18 @@
 module ApplicationHelper
+  # Controllers das telas de Tarefas.
+  TASKS_PANEL_CONTROLLERS = %w[lists].freeze
+
   # Itens do menu lateral (só ícones). Cada item fica ativo nas telas dos controllers listados em
   # `controllers`.
   def navigation_items
     [
-      { label: Task.model_name.human(count: 2), path: root_path, icon: "ri-checkbox-circle-line", controllers: %w[lists] }
+      { label: Task.model_name.human(count: 2), path: root_path, icon: "ri-checkbox-circle-line", controllers: TASKS_PANEL_CONTROLLERS }
     ]
+  end
+
+  # Telas de Tarefas mostram o painel de listas ao lado do menu.
+  def tasks_panel?
+    TASKS_PANEL_CONTROLLERS.include?(controller_name)
   end
 
   def navigation_item_active?(item)

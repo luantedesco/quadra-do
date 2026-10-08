@@ -1,0 +1,16 @@
+<div class="tasks-panel offcanvas-md offcanvas-start" tabindex="-1" id="tasks-panel" aria-labelledby="tasks-panel-title">
+  <div class="d-flex align-items-center justify-content-between px-3 pt-3 pb-2">
+    <h5 class="m-0 text-uppercase fs-6 text-muted" id="tasks-panel-title"><%= List.model_name.human(count: 2) %></h5>
+    <button type="button" class="btn-close d-md-none" data-bs-dismiss="offcanvas" data-bs-target="#tasks-panel" aria-label="Close"></button>
+  </div>
+  <ul class="list-unstyled px-2 pb-3 m-0" id="tasks-panel-lists">
+    <% Web::Queries::Lists::IndexQuery.new.call.each do |list| %>
+      <li class="<%= class_names("tasks-panel-item", active: @list&.id == list.id) %>">
+        <%= link_to list_path(list), class: "d-block text-truncate" do %>
+          <i class="ri-circle-fill font-10 me-2" style="color: <%= list.color %>;"></i>
+          <%= list.name %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</div>

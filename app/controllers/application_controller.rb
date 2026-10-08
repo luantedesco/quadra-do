@@ -17,8 +17,10 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # Cada chave do Hash do service vira variável da view (@instance, @error...).
+  # Cada chave do Hash do service vira variável da view (@instance, @error...). A action que precisa
+  # navegar em vez de renderizar define "<action>_redirect".
   def respond_attempt(response)
     response.each { |key, value| instance_variable_set("@#{key}", value) }
+    send("#{action_name}_redirect") if respond_to?("#{action_name}_redirect", true)
   end
 end
