@@ -5,7 +5,7 @@ RSpec.describe Task, type: :model do
   it { is_expected.to belong_to(:parent).class_name("Task").optional }
   it { is_expected.to have_many(:subtasks).class_name("Task").with_foreign_key(:parent_id) }
   it { is_expected.to validate_presence_of(:title) }
-  it { is_expected.to define_enum_for(:priority).with_values(none: 0, low: 1, medium: 2, high: 3).with_prefix }
+  it { is_expected.to define_enum_for(:priority).with_values(none: 0, low: 1, medium: 2, high: 3).with_prefix.validating }
 
   it_behaves_like "soft deletable"
 

@@ -50,9 +50,9 @@ RSpec.describe "Tarefas", type: :request do
       get task_path(task, from: list_path(list)), headers: { "Turbo-Frame" => "task_detail" }
 
       assert_select "turbo-frame#task_detail #task-detail" do
-        assert_select "h4", text: "Revisar relatório"
-        assert_select ".badge", text: "Alta"
-        assert_select "p", text: "Ver os números"
+        assert_select "#detail_task_title[value=?]", "Revisar relatório"
+        assert_select "#detail_task_priority option[selected][value=high]", text: "Alta"
+        assert_select "#detail_task_description", text: "Ver os números"
         assert_select "a[data-turbo-frame=_top][href=?]", list_path(list)
       end
     end
@@ -87,6 +87,35 @@ RSpec.describe "Tarefas", type: :request do
 
       assert_select "#list-tasks a[href=?][data-turbo-frame=task_detail][data-turbo-action=advance]", task_path(task, from: list_path(list)), text: "Revisar relatório"
       assert_select "turbo-frame#task_detail:not([src])"
+    end
+  end
+
+  describe "editar no painel" do
+    let(:task) { create(:task, title: "Revisar relatório") }
+
+    it "salva título, descrição, prazo e prioridade e responde com o refresh da página, sem o request-id" do
+      patch task_path(task), params: { task: { title: "Revisar o relatório", description: "Ver os números", deadline: "2026-10-09T14:00", priority: "medium" } }, as: :turbo_stream
+
+      expect(task.reload).to have_attributes(title: "Revisar o relatório", description: "Ver os números", deadline: Time.zone.parse("2026-10-09 14:00"), priority: "medium")
+      assert_turbo_stream action: :refresh
+      expect(response.body).not_to include("request-id")
+    end
+
+    it "não salva título vazio e troca o painel com o erro embaixo do campo" do
+      patch task_path(task), params: { task: { title: "" } }, as: :turbo_stream
+
+      expect(task.reload.title).to eq("Revisar relatório")
+      expect(response).to have_http_status(:unprocessable_content)
+      assert_turbo_stream(action: :replace, target: "task-detail") do
+        assert_select "#detail_task_title.is-invalid + .invalid-feedback", text: "Título não pode ficar em branco"
+      end
+    end
+
+    it "recusa prioridade fora da lista como erro de validação, sem erro 500" do
+      patch task_path(task), params: { task: { priority: "urgente" } }, as: :turbo_stream
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(task.reload).to be_priority_none
     end
   end
 

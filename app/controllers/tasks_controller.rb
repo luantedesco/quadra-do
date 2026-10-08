@@ -2,7 +2,7 @@ class TasksController < ApplicationController
   layout -> { turbo_frame_request? ? "turbo_rails/frame" : "application" }
   helper_method :task_return_path
 
-  service_actions :show, :create, :move, :toggle_finish
+  service_actions :show, :create, :update, :move, :toggle_finish
 
   private
 
@@ -17,6 +17,11 @@ class TasksController < ApplicationController
   def create_redirect
     flash[:quick_add] = @error || :ok
     redirect_to list_path(@task.list)
+  end
+
+  # Com erro, o painel volta com a mensagem no campo.
+  def update_redirect
+    render status: :unprocessable_content if @error
   end
 
   # Arrastar na tabela da lista: o JavaScript só precisa saber se gravou.

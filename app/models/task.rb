@@ -5,7 +5,7 @@ class Task < ApplicationRecord
   belongs_to :parent, class_name: "Task", optional: true
   has_many :subtasks, class_name: "Task", foreign_key: :parent_id, inverse_of: :parent
 
-  enum :priority, { none: 0, low: 1, medium: 2, high: 3 }, prefix: true
+  enum :priority, { none: 0, low: 1, medium: 2, high: 3 }, prefix: true, validate: true
 
   validates :title, presence: true
   validate :parent_must_be_in_same_list, :subtask_must_be_one_level, if: :parent_id?

@@ -10,6 +10,8 @@ pt-BR:
         name: "Nome"
       task:
         deadline: "Prazo"
+        description: "Descrição"
+        priority: "Prioridade"
         title: "Título"
     models:
       list:
@@ -68,3 +70,4 @@ pt-BR:
       high: "Alta"
       low: "Baixa"
       medium: "Média"
+      none: "Nenhuma"

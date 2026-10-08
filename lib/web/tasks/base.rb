@@ -12,7 +12,7 @@ module Web
       end
 
       def task_params
-        params.require(:task).permit(:title, :deadline)
+        params.require(:task).permit(:title, :description, :deadline, :priority)
       end
     end
   end
