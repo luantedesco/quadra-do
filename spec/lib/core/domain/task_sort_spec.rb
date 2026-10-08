@@ -3,8 +3,8 @@ require "rails_helper"
 RSpec.describe Core::Domain::TaskSort do
   let(:list) { create(:list) }
 
-  def ordered_titles(key)
-    list.tasks.actives.reorder(described_class.new(key).order).pluck(:title)
+  def ordered_titles(key, direction = nil)
+    list.tasks.actives.reorder(described_class.new(key, direction).order).pluck(:title)
   end
 
   before do
@@ -33,7 +33,25 @@ RSpec.describe Core::Domain::TaskSort do
     expect(ordered_titles("created")).to eq(%w[Abacaxi cereja banana])
   end
 
-  it "valor desconhecido cai na personalizada" do
-    expect(described_class.new("qualquer")).to have_attributes(key: "manual", manual?: true)
+  it "valor desconhecido cai na personalizada, que não tem direção" do
+    expect(described_class.new("qualquer", "asc")).to have_attributes(key: "manual", manual?: true, direction: nil)
+  end
+
+  describe "direção" do
+    it "cada ordem tem a sua direção padrão, e direção desconhecida cai nela" do
+      expect(%w[deadline priority title created].map { |key| described_class.new(key, "qualquer").direction }).to eq(%w[asc desc asc desc])
+    end
+
+    it "prazo decrescente põe a mais distante primeiro e mantém as sem prazo no fim" do
+      expect(ordered_titles("deadline", "desc")).to eq(%w[banana cereja Abacaxi])
+    end
+
+    it "prioridade crescente põe a baixa primeiro e mantém as sem prioridade no fim" do
+      expect(ordered_titles("priority", "asc")).to eq(%w[banana cereja Abacaxi])
+    end
+
+    it "título decrescente e criação crescente invertem a ordem padrão" do
+      expect([ ordered_titles("title", "desc"), ordered_titles("created", "asc") ]).to eq([ %w[cereja banana Abacaxi], %w[banana cereja Abacaxi] ])
+    end
   end
 end

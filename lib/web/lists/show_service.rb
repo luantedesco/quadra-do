@@ -11,9 +11,13 @@ module Web
         Web::Queries::Lists::TasksQuery.new(list: instance, task_sort:, scope:).call
       end
 
-      # A ordem pedida no menu ou, sem ela, a lembrada no cookie da lista.
+      # A ordem e a direção pedidas no menu ou, sem elas, as lembradas no cookie da lista.
       def task_sort
-        @task_sort ||= Core::Domain::TaskSort.new(params[:sort].presence || cookies["list_sort_#{instance.id}"])
+        @task_sort ||= if params[:sort].present?
+          Core::Domain::TaskSort.new(params[:sort], params[:direction])
+        else
+          Core::Domain::TaskSort.new(cookies["list_sort_#{instance.id}"], cookies["list_direction_#{instance.id}"])
+        end
       end
     end
   end

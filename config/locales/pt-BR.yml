@@ -26,7 +26,9 @@ pt-BR:
     no_color: "Sem cor"
     no_tasks: "Nenhuma tarefa aberta nesta lista."
     sort:
+      asc: "Crescente"
       created: "Criação"
+      desc: "Decrescente"
       deadline: "Prazo"
       manual: "Personalizada"
       priority: "Prioridade"

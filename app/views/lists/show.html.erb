@@ -8,11 +8,22 @@
       <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="ri-sort-desc"></i>
         <span class="ms-1"><%= t("lists.sort.#{@sort}") %></span>
+        <% if @sort.direction %>
+          <i class="<%= @sort.direction == "asc" ? "ri-arrow-up-line" : "ri-arrow-down-line" %>" title="<%= t("lists.sort.#{@sort.direction}") %>"></i>
+        <% end %>
       </button>
       <div class="dropdown-menu">
         <h6 class="dropdown-header"><%= t("lists.sort.title_menu") %></h6>
         <% Core::Domain::TaskSort.keys.each do |sort| %>
           <%= link_to t("lists.sort.#{sort}"), list_path(@list, sort:), class: class_names("dropdown-item", active: sort == @sort.key) %>
+        <% end %>
+        <% if @sort.direction %>
+          <div class="dropdown-divider"></div>
+          <% %w[asc desc].each do |direction| %>
+            <%= link_to list_path(@list, sort: @sort.key, direction:), class: class_names("dropdown-item", active: direction == @sort.direction) do %>
+              <i class="<%= direction == "asc" ? "ri-arrow-up-line" : "ri-arrow-down-line" %> me-1"></i><%= t("lists.sort.#{direction}") %>
+            <% end %>
+          <% end %>
         <% end %>
       </div>
     </div>

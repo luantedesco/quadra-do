@@ -95,6 +95,31 @@ RSpec.describe "Listas", type: :request do
         assert_select "#list-tasks [data-id]:nth-of-type(1)[data-id=?]", high.id
       end
 
+      it "inverte a direção, marca no menu e a lembra junto com a ordem" do
+        get list_path(list, sort: "priority", direction: "asc")
+
+        assert_select "#list-tasks [data-id]:nth-of-type(1)[data-id=?]", low.id
+        assert_select "#sort-menu .dropdown-item.active", text: "Crescente"
+
+        get list_path(list)
+
+        assert_select "#list-tasks [data-id]:nth-of-type(1)[data-id=?]", low.id
+      end
+
+      it "trocar de ordem sem direção volta à direção padrão dela" do
+        get list_path(list, sort: "priority", direction: "asc")
+        get list_path(list, sort: "priority")
+
+        assert_select "#list-tasks [data-id]:nth-of-type(1)[data-id=?]", high.id
+        expect(cookies["list_direction_#{list.id}"]).to be_blank
+      end
+
+      it "não oferece direção na ordem personalizada" do
+        get list_path(list)
+
+        assert_select "#sort-menu .dropdown-item", text: "Crescente", count: 0
+      end
+
       it "abre na ordem personalizada sem escolha e ignora opção desconhecida" do
         get list_path(list, sort: "qualquer")
 

@@ -22,10 +22,16 @@ class ListsController < ApplicationController
     redirect_to root_path, status: :see_other
   end
 
-  # Ordem escolhida no menu "Ordenar por", lembrada por lista em cookie.
+  # Ordem e direção escolhidas no menu "Ordenar por", lembradas por lista em cookie; ordem sem direção
+  # volta à direção padrão dela.
   def remember_sort
     return unless Core::Domain::TaskSort.valid?(params[:sort])
 
     cookies["list_sort_#{params[:id]}"] = { value: params[:sort], expires: 1.year }
+    if Core::Domain::TaskSort.valid_direction?(params[:direction])
+      cookies["list_direction_#{params[:id]}"] = { value: params[:direction], expires: 1.year }
+    else
+      cookies.delete("list_direction_#{params[:id]}")
+    end
   end
 end
