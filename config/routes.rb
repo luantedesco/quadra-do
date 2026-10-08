@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
   root "lists#index"
   resources :lists, except: :index
-  resources :tasks, only: :create do
+  resources :tasks, only: %i[show create] do
     patch :move, on: :member
   end
   resource :sidebar, only: [], controller: "sidebar" do

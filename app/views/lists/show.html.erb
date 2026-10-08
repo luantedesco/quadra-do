@@ -1,91 +1,96 @@
 <% content_for :page_title, @list.name %>
 <div class="container-fluid">
-  <div class="d-flex align-items-center gap-2 mb-2">
-    <button class="btn btn-light d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tasks-panel" aria-controls="tasks-panel" aria-label="<%= List.model_name.human(count: 2) %>">
-      <i class="ri-menu-line"></i>
-    </button>
-    <div class="dropdown" id="sort-menu">
-      <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="ri-sort-desc"></i>
-        <span class="ms-1"><%= t("lists.sort.#{@sort}") %></span>
-        <% if @sort.direction %>
-          <i class="<%= @sort.direction == "asc" ? "ri-arrow-up-line" : "ri-arrow-down-line" %>" title="<%= t("lists.sort.#{@sort.direction}") %>"></i>
-        <% end %>
-      </button>
-      <div class="dropdown-menu">
-        <h6 class="dropdown-header"><%= t("lists.sort.title_menu") %></h6>
-        <% Core::Domain::TaskSort.keys.each do |sort| %>
-          <%= link_to t("lists.sort.#{sort}"), list_path(@list, sort:), class: class_names("dropdown-item", active: sort == @sort.key) %>
-        <% end %>
-        <% if @sort.direction %>
-          <div class="dropdown-divider"></div>
-          <% %w[asc desc].each do |direction| %>
-            <%= link_to list_path(@list, sort: @sort.key, direction:), class: class_names("dropdown-item", active: direction == @sort.direction) do %>
-              <i class="<%= direction == "asc" ? "ri-arrow-up-line" : "ri-arrow-down-line" %> me-1"></i><%= t("lists.sort.#{direction}") %>
+  <div class="row">
+    <div class="col">
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <button class="btn btn-light d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tasks-panel" aria-controls="tasks-panel" aria-label="<%= List.model_name.human(count: 2) %>">
+          <i class="ri-menu-line"></i>
+        </button>
+        <div class="dropdown" id="sort-menu">
+          <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="ri-sort-desc"></i>
+            <span class="ms-1"><%= t("lists.sort.#{@sort}") %></span>
+            <% if @sort.direction %>
+              <i class="<%= @sort.direction == "asc" ? "ri-arrow-up-line" : "ri-arrow-down-line" %>" title="<%= t("lists.sort.#{@sort.direction}") %>"></i>
             <% end %>
-          <% end %>
-        <% end %>
-      </div>
-    </div>
-    <div class="dropdown" id="group-menu">
-      <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="ri-stack-line"></i>
-        <span class="ms-1"><%= t("lists.group.#{@group}") %></span>
-      </button>
-      <div class="dropdown-menu">
-        <h6 class="dropdown-header"><%= t("lists.group.title_menu") %></h6>
-        <% Core::Domain::TaskGroup.keys.each do |group| %>
-          <%= link_to t("lists.group.#{group}"), list_path(@list, group:), class: class_names("dropdown-item", active: group == @group.key) %>
-        <% end %>
-      </div>
-    </div>
-  </div>
-
-  <%= render "tasks/quick_add", list: @list %>
-
-  <div id="list-tasks" data-controller="task-sort" data-task-sort-group-value="<%= @group %>" data-task-sort-reorder-value="<%= @sort.manual? %>">
-    <% @sections.each do |section, tasks| %>
-      <div class="<%= class_names("mb-3", "list-section-#{section}": section) %>">
-        <% if section %>
-          <h5 class="m-0 pb-2"><%= t("lists.group.sections.#{@group}.#{section}") %> <span class="text-muted">(<%= tasks.size %>)</span></h5>
-        <% end %>
-        <div class="card mb-0">
-          <div class="card-body" data-task-sort-target="section" data-section="<%= section %>" data-droppable="<%= @group.droppable?(section) %>">
-            <% tasks.each do |task| %>
-              <%= render "lists/task_row", task:, draggable: true %>
+          </button>
+          <div class="dropdown-menu">
+            <h6 class="dropdown-header"><%= t("lists.sort.title_menu") %></h6>
+            <% Core::Domain::TaskSort.keys.each do |sort| %>
+              <%= link_to t("lists.sort.#{sort}"), list_path(@list, sort:), class: class_names("dropdown-item", active: sort == @sort.key) %>
             <% end %>
-            <% if tasks.empty? %>
+            <% if @sort.direction %>
+              <div class="dropdown-divider"></div>
+              <% %w[asc desc].each do |direction| %>
+                <%= link_to list_path(@list, sort: @sort.key, direction:), class: class_names("dropdown-item", active: direction == @sort.direction) do %>
+                  <i class="<%= direction == "asc" ? "ri-arrow-up-line" : "ri-arrow-down-line" %> me-1"></i><%= t("lists.sort.#{direction}") %>
+                <% end %>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+        <div class="dropdown" id="group-menu">
+          <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="ri-stack-line"></i>
+            <span class="ms-1"><%= t("lists.group.#{@group}") %></span>
+          </button>
+          <div class="dropdown-menu">
+            <h6 class="dropdown-header"><%= t("lists.group.title_menu") %></h6>
+            <% Core::Domain::TaskGroup.keys.each do |group| %>
+              <%= link_to t("lists.group.#{group}"), list_path(@list, group:), class: class_names("dropdown-item", active: group == @group.key) %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <%= render "tasks/quick_add", list: @list %>
+
+      <div id="list-tasks" data-controller="task-sort" data-task-sort-group-value="<%= @group %>" data-task-sort-reorder-value="<%= @sort.manual? %>">
+        <% @sections.each do |section, tasks| %>
+          <div class="<%= class_names("mb-3", "list-section-#{section}": section) %>">
+            <% if section %>
+              <h5 class="m-0 pb-2"><%= t("lists.group.sections.#{@group}.#{section}") %> <span class="text-muted">(<%= tasks.size %>)</span></h5>
+            <% end %>
+            <div class="card mb-0">
+              <div class="card-body" data-task-sort-target="section" data-section="<%= section %>" data-droppable="<%= @group.droppable?(section) %>">
+                <% tasks.each do |task| %>
+                  <%= render "lists/task_row", task:, draggable: true %>
+                <% end %>
+                <% if tasks.empty? %>
+                  <p class="text-muted text-center mb-0"><%= t("lists.no_tasks") %></p>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+        <% if @sections.empty? %>
+          <div class="card mb-0">
+            <div class="card-body">
               <p class="text-muted text-center mb-0"><%= t("lists.no_tasks") %></p>
-            <% end %>
+            </div>
           </div>
-        </div>
+        <% end %>
       </div>
-    <% end %>
-    <% if @sections.empty? %>
-      <div class="card mb-0">
-        <div class="card-body">
-          <p class="text-muted text-center mb-0"><%= t("lists.no_tasks") %></p>
-        </div>
-      </div>
-    <% end %>
-  </div>
 
-  <% if @finished_tasks.any? %>
-    <div class="mt-3" id="finished-tasks">
-      <h5 class="m-0 pb-2">
-        <a class="text-body" data-bs-toggle="collapse" href="#finished-tasks-body" role="button" aria-expanded="false" aria-controls="finished-tasks-body">
-          <i class="ri-arrow-down-s-line font-18"></i><%= t("lists.finished") %> <span class="text-muted">(<%= @finished_tasks.size %>)</span>
-        </a>
-      </h5>
-      <div class="collapse" id="finished-tasks-body">
-        <div class="card mb-0">
-          <div class="card-body">
-            <% @finished_tasks.each do |task| %>
-              <%= render "lists/task_row", task: %>
-            <% end %>
+      <% if @finished_tasks.any? %>
+        <div class="mt-3" id="finished-tasks">
+          <h5 class="m-0 pb-2">
+            <a class="text-body" data-bs-toggle="collapse" href="#finished-tasks-body" role="button" aria-expanded="false" aria-controls="finished-tasks-body">
+              <i class="ri-arrow-down-s-line font-18"></i><%= t("lists.finished") %> <span class="text-muted">(<%= @finished_tasks.size %>)</span>
+            </a>
+          </h5>
+          <div class="collapse" id="finished-tasks-body">
+            <div class="card mb-0">
+              <div class="card-body">
+                <% @finished_tasks.each do |task| %>
+                  <%= render "lists/task_row", task: %>
+                <% end %>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      <% end %>
     </div>
-  <% end %>
+    <%= render "tasks/detail_frame" %>
+  </div>
 </div>

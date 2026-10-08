@@ -42,6 +42,54 @@ RSpec.describe "Tarefas", type: :request do
     end
   end
 
+  describe "painel da tarefa" do
+    let(:list) { create(:list) }
+    let(:task) { create(:task, list:, title: "Revisar relatório", description: "Ver os números", priority: :high) }
+
+    it "abre a tarefa no frame da direita, com o fechar voltando para a tela de origem" do
+      get task_path(task, from: list_path(list)), headers: { "Turbo-Frame" => "task_detail" }
+
+      assert_select "turbo-frame#task_detail #task-detail" do
+        assert_select "h4", text: "Revisar relatório"
+        assert_select ".badge", text: "Alta"
+        assert_select "p", text: "Ver os números"
+        assert_select "a[data-turbo-frame=_top][href=?]", list_path(list)
+      end
+    end
+
+    it "acesso direto volta para a lista com o painel carregando a tarefa" do
+      get task_path(task)
+
+      expect(response).to redirect_to("#{list_path(list)}?task=#{task.id}")
+
+      follow_redirect!
+      assert_select "turbo-frame#task_detail[src=?]", task_path(task, from: list_path(list))
+    end
+
+    it "ignora a tela de origem que não é do app" do
+      get task_path(task, from: "https://exemplo.com/roubo"), headers: { "Turbo-Frame" => "task_detail" }
+
+      assert_select "#task-detail a[data-turbo-frame=_top][href=?]", list_path(list)
+    end
+
+    it "responde 404 para tarefa apagada" do
+      task.soft_delete!
+
+      get task_path(task), headers: { "Turbo-Frame" => "task_detail" }
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "liga o título da linha ao painel, avançando a URL" do
+      task
+
+      get list_path(list)
+
+      assert_select "#list-tasks a[href=?][data-turbo-frame=task_detail][data-turbo-action=advance]", task_path(task, from: list_path(list)), text: "Revisar relatório"
+      assert_select "turbo-frame#task_detail:not([src])"
+    end
+  end
+
   describe "arrastar" do
     include ActiveSupport::Testing::TimeHelpers
 

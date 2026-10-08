@@ -20,6 +20,8 @@
     <%# Só o CSS compilado pelo dartsass: os .css de app/assets/stylesheets já entram nele por @import. %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <%# Refresh da mesma página troca só o que mudou, sem piscar nem perder a rolagem. %>
+    <%= turbo_refreshes_with method: :morph, scroll: :preserve %>
   </head>
 
   <body>

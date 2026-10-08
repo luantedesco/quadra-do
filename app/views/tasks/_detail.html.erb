@@ -1,0 +1,24 @@
+<%# Detalhe da tarefa no card do Hyper, aberto ao lado da lista. %>
+<div class="card mb-0" id="task-detail">
+  <div class="card-body">
+    <div class="card-widgets">
+      <%= link_to task_return_path(task), "aria-label": t("tasks.close"), title: t("tasks.close"), data: { turbo_frame: "_top" } do %>
+        <i class="ri-close-line"></i>
+      <% end %>
+    </div>
+
+    <h4 class="mt-0"><%= task.title %></h4>
+
+    <ul class="list-inline font-13 mb-3">
+      <li class="list-inline-item"><i class="ri-list-check me-1"></i><%= task.list.name %></li>
+      <% if task.deadline %>
+        <li class="list-inline-item ms-2"><i class="ri-calendar-line me-1"></i><%= l(task.deadline, format: :short) %></li>
+      <% end %>
+      <li class="list-inline-item ms-2"><%= priority_badge(task) %></li>
+    </ul>
+
+    <% if task.description.present? %>
+      <div class="text-body"><%= simple_format(task.description) %></div>
+    <% end %>
+  </div>
+</div>

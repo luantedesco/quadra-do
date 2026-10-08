@@ -5,3 +5,12 @@ html.theme-switching *::before,
 html.theme-switching *::after {
   transition: none !important;
 }
+
+/* Coluna do detalhe da tarefa (turbo-frame, que nasce inline); vazia, não aparece. */
+turbo-frame#task_detail {
+  display: block;
+}
+
+turbo-frame#task_detail:empty {
+  display: none;
+}
