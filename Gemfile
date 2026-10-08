@@ -57,4 +57,5 @@ group :development do
   gem "web-console"
 
   gem "erb_lint", "~> 0.9", require: false
+  gem "foreman", "~> 0.90", require: false
 end

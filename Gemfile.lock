@@ -133,6 +133,8 @@ GEM
     ffi (1.17.4-x86_64-darwin)
     ffi (1.17.4-x86_64-linux-gnu)
     ffi (1.17.4-x86_64-linux-musl)
+    foreman (0.90.0)
+      thor (~> 1.4)
     globalid (1.4.0)
       activesupport (>= 6.1)
     google-protobuf (4.36.2)
@@ -413,6 +415,7 @@ DEPENDENCIES
   debug
   erb_lint (~> 0.9)
   factory_bot_rails (~> 6.5)
+  foreman (~> 0.90)
   image_processing (~> 1.2)
   importmap-rails
   pg (~> 1.1)
