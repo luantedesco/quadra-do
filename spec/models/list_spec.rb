@@ -6,6 +6,34 @@ RSpec.describe List, type: :model do
 
   it_behaves_like "soft deletable"
 
+  describe "cor" do
+    it { is_expected.to allow_values("#727cf5", "#39AFD1", "", nil).for(:color) }
+    it { is_expected.not_to allow_values("red", "#fff", "#727cf5; background: url(x)").for(:color) }
+  end
+
+  describe ".next_position" do
+    it "é 0 sem listas e vem depois da última lista ativa" do
+      expect(described_class.next_position).to eq(0)
+
+      create(:list, position: 3)
+      create(:list, position: 7).soft_delete!
+
+      expect(described_class.next_position).to eq(4)
+    end
+  end
+
+  describe "#soft_delete!" do
+    it "apaga também as tarefas e as subtarefas delas" do
+      list = create(:list)
+      task = create(:task, list:)
+      subtask = create(:task, list:, parent: task)
+
+      list.soft_delete!
+
+      expect([ list, task, subtask ].map { |record| record.reload.deleted_at }).to all(be_present)
+    end
+  end
+
   describe ".first e .last" do
     it "seguem a ordem de criação" do
       older = create(:list, created_at: 2.days.ago)

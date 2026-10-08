@@ -1,0 +1,25 @@
+<%= form_with model: list do |form| %>
+  <div class="mb-2">
+    <%= form.label :name, class: "form-label" %>
+    <%= form.text_field :name, class: class_names("form-control", "is-invalid": list.errors[:name].any?), required: true %>
+    <% list.errors.full_messages_for(:name).each do |message| %>
+      <div class="invalid-feedback"><%= message %></div>
+    <% end %>
+  </div>
+  <div class="mb-3">
+    <%= form.label :color, class: "form-label" %>
+    <div class="d-flex align-items-center gap-3">
+      <%= form.color_field :color, class: class_names("form-control form-control-color", "is-invalid": list.errors[:color].any?) %>
+      <div class="form-check m-0">
+        <%= check_box_tag "list[no_color]", "1", list.color.blank?, id: "list_no_color", class: "form-check-input" %>
+        <%= label_tag "list_no_color", t("lists.no_color"), class: "form-check-label" %>
+      </div>
+    </div>
+    <% list.errors.full_messages_for(:color).each do |message| %>
+      <div class="invalid-feedback d-block"><%= message %></div>
+    <% end %>
+  </div>
+  <div class="d-flex justify-content-end">
+    <button type="submit" class="btn btn-primary"><i class="ri-save-3-line me-1"></i><%= t("actions.save") %></button>
+  </div>
+<% end %>

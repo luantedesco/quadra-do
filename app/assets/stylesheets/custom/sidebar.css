@@ -108,3 +108,12 @@ html[data-sidenav-size="condensed"]:not([data-layout="topnav"]) .wrapper .conten
   color: var(--ct-primary);
   font-weight: 600;
 }
+
+/* O menu de editar e apagar da lista só aparece no hover. */
+.tasks-panel-item .tasks-panel-menu {
+  visibility: hidden;
+}
+
+.tasks-panel-item:hover .tasks-panel-menu {
+  visibility: visible;
+}

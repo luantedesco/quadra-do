@@ -1,9 +1,25 @@
 pt-BR:
+  actions:
+    destroy: "Apagar"
+    edit: "Editar"
+    save: "Salvar"
   activerecord:
+    attributes:
+      list:
+        color: "Cor"
+        name: "Nome"
     models:
+      list:
+        one: "Lista"
+        other: "Listas"
       task:
         one: "Tarefa"
         other: "Tarefas"
+  lists:
+    destroy_confirm: "Apagar a lista e as tarefas dela?"
+    edit: "Editar lista"
+    new: "Nova lista"
+    no_color: "Sem cor"
   panel:
     empty: "Nenhuma lista ainda. Crie a primeira para organizar suas tarefas."
   sidebar:
