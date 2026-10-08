@@ -66,6 +66,8 @@ pt-BR:
     finish: "Concluída"
     move:
       not_droppable: "Esta seção não recebe tarefa."
+    move_to_list:
+      sub_task: "Subtarefa segue a lista da tarefa pai."
     priorities:
       high: "Alta"
       low: "Baixa"

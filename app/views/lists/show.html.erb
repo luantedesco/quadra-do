@@ -45,7 +45,7 @@
 
       <%= render "tasks/quick_add", list: @list %>
 
-      <div id="list-tasks" data-controller="task-sort" data-task-sort-group-value="<%= @group %>" data-task-sort-reorder-value="<%= @sort.manual? %>">
+      <div id="list-tasks" data-controller="task-sort" data-task-sort-group-value="<%= @group %>" data-task-sort-reorder-value="<%= @sort.manual? %>" data-task-sort-list-value="<%= @list.id %>">
         <% @sections.each do |section, tasks| %>
           <div class="<%= class_names("mb-3", "list-section-#{section}": section) %>">
             <% if section %>

@@ -119,6 +119,43 @@ RSpec.describe "Tarefas", type: :request do
     end
   end
 
+  describe "mover para outra lista" do
+    let(:origin) { create(:list) }
+    let(:destination) { create(:list, name: "Casa") }
+    let(:task) { create(:task, list: origin) }
+
+    it "leva a tarefa com as subtarefas para o fim da lista nova e responde com o refresh da página" do
+      create(:task, list: destination, position: 4)
+      subtask = create(:task, list: origin, parent: task)
+
+      patch move_to_list_task_path(task), params: { task: { list_id: destination.id } }, as: :turbo_stream
+
+      expect(task.reload).to have_attributes(list: destination, position: 5)
+      expect(subtask.reload.list).to eq(destination)
+      assert_turbo_stream action: :refresh
+
+      get list_path(origin)
+      assert_select "#list-tasks [data-id=?]", task.id, count: 0
+    end
+
+    it "recusa mover subtarefa sozinha" do
+      subtask = create(:task, list: origin, parent: task)
+
+      patch move_to_list_task_path(subtask), params: { task: { list_id: destination.id } }, as: :turbo_stream
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(subtask.reload.list).to eq(origin)
+    end
+
+    it "responde 404 para lista apagada" do
+      destination.soft_delete!
+
+      patch move_to_list_task_path(task), params: { task: { list_id: destination.id } }, as: :turbo_stream
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
   describe "concluir e reabrir" do
     let(:list) { create(:list) }
     let(:task) { create(:task, list:) }
@@ -199,7 +236,7 @@ RSpec.describe "Tarefas", type: :request do
 
       get list_path(list, sort: "title", group: "deadline")
 
-      assert_select "#list-tasks[data-controller=task-sort][data-task-sort-reorder-value=false][data-task-sort-group-value=deadline]"
+      assert_select "#list-tasks[data-controller=task-sort][data-task-sort-reorder-value=false][data-task-sort-group-value=deadline][data-task-sort-list-value=?]", list.id
       assert_select "#list-tasks .task-drag-handle", count: 2
       assert_select "#finished-tasks .task-drag-handle", count: 0
       assert_select "#list-tasks [data-section=no_deadline][data-droppable=true]"

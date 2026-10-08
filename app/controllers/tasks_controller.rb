@@ -2,7 +2,7 @@ class TasksController < ApplicationController
   layout -> { turbo_frame_request? ? "turbo_rails/frame" : "application" }
   helper_method :task_return_path
 
-  service_actions :show, :create, :update, :move, :toggle_finish
+  service_actions :show, :create, :update, :move, :toggle_finish, :move_to_list
 
   private
 
@@ -22,6 +22,11 @@ class TasksController < ApplicationController
   # Com erro, o painel volta com a mensagem no campo.
   def update_redirect
     render status: :unprocessable_content if @error
+  end
+
+  # A tarefa só muda de lista se a mudança é válida; o erro não tem tela própria.
+  def move_to_list_redirect
+    head :unprocessable_content if @error
   end
 
   # Arrastar na tabela da lista: o JavaScript só precisa saber se gravou.

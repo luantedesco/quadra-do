@@ -117,3 +117,9 @@ html[data-sidenav-size="condensed"]:not([data-layout="topnav"]) .wrapper .conten
 .tasks-panel-item:hover .tasks-panel-menu {
   visibility: visible;
 }
+
+/* Lista do painel debaixo da tarefa arrastada: soltar ali leva a tarefa para ela. */
+.tasks-panel-item.drop-target {
+  background-color: var(--ct-primary-bg-subtle);
+  outline: 1px dashed var(--ct-primary);
+}
