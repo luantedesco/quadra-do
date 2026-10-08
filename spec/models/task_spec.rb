@@ -153,6 +153,35 @@ RSpec.describe Task, type: :model do
     end
   end
 
+  describe "#nest_under!" do
+    let(:list) { create(:list) }
+    let(:parent) { create(:task, list:) }
+    let(:task) { create(:task, list:, position: 7) }
+
+    it "vira filha da tarefa, no fim das subtarefas dela" do
+      create(:task, list:, parent:, position: 2)
+
+      task.nest_under!(parent)
+
+      expect(task.reload).to have_attributes(parent:, position: 3)
+    end
+
+    it "sem pai, volta a ser tarefa de topo no fim da lista" do
+      subtask = create(:task, list:, parent:)
+      task
+
+      subtask.nest_under!(nil)
+
+      expect(subtask.reload).to have_attributes(parent: nil, position: 8)
+    end
+
+    it "recusa virar filha de uma descendente" do
+      subtask = create(:task, list:, parent:)
+
+      expect { parent.nest_under!(subtask) }.to raise_error(ActiveRecord::RecordInvalid)
+    end
+  end
+
   describe "#move_to_list!" do
     let(:task) { create(:task) }
     let(:new_list) { create(:list) }

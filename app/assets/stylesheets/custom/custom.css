@@ -31,3 +31,10 @@ turbo-frame#task_detail:empty {
 .subtask-toggle[aria-expanded="true"] i {
   transform: rotate(90deg);
 }
+
+/* Tarefa debaixo da arrastada, com o ponteiro no meio da linha: soltar ali a torna filha dela. */
+.task-node.nest-target > .row {
+  background-color: var(--ct-primary-bg-subtle);
+  outline: 1px dashed var(--ct-primary);
+  border-radius: 4px;
+}

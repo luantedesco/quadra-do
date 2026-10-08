@@ -101,11 +101,12 @@ RSpec.describe "Listas", type: :request do
         assert_select "#list-tasks .list-section-none #subtasks-#{task.id} [data-id=?]", first.id
       end
 
-      it "só a tarefa de topo tem a alça de arrastar" do
+      it "toda tarefa tem a alça, e cada bloco diz o pai de quem é solto nele" do
         get list_path(list)
 
-        assert_select "#list-tasks .task-drag-handle", count: 1
-        assert_select "[data-id=?] > .row .task-drag-handle", task.id
+        assert_select "#list-tasks .task-drag-handle", count: 4
+        assert_select "#list-tasks .card-body[data-task-sort-target=section][data-parent-id='']"
+        assert_select "#subtasks-#{task.id}[data-task-sort-target=section][data-parent-id=?][data-droppable=true]", task.id
       end
     end
 

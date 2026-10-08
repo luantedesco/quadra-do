@@ -52,7 +52,7 @@
               <h5 class="m-0 pb-2"><%= t("lists.group.sections.#{@group}.#{section}") %> <span class="text-muted">(<%= tasks.size %>)</span></h5>
             <% end %>
             <div class="card mb-0">
-              <div class="card-body" data-task-sort-target="section" data-section="<%= section %>" data-droppable="<%= @group.droppable?(section) %>">
+              <div class="card-body" data-task-sort-target="section" data-section="<%= section %>" data-parent-id="" data-droppable="<%= @group.none? || @group.droppable?(section) %>">
                 <% tasks.each do |task| %>
                   <%= render "lists/task_node", task:, subtasks: @subtasks, expanded: @expanded, depth: 0, draggable: true %>
                 <% end %>

@@ -288,6 +288,42 @@ RSpec.describe "Tarefas", type: :request do
       expect(response).to have_http_status(:not_found)
     end
 
+    describe "com subtarefas" do
+      let(:parent) { tasks.first }
+      let!(:subtasks) { Array.new(2) { |index| create(:task, list:, parent:, position: index) } }
+
+      it "reordena entre as irmãs" do
+        patch move_task_path(subtasks.last), params: { group: "none", following_id: subtasks.first.id }, as: :json
+
+        expect(parent.subtasks.actives.reorder(:position).pluck(:id)).to eq(subtasks.reverse.map(&:id))
+      end
+
+      it "solta sobre outra tarefa, vira filha dela no fim das subtarefas" do
+        patch move_task_path(tasks.last), params: { group: "none", parent_id: parent.id }, as: :json
+
+        expect(response).to have_http_status(:ok)
+        expect(tasks.last.reload).to have_attributes(parent:, position: 2)
+      end
+
+      it "solta no bloco das tarefas de topo, volta a ser de topo entre os vizinhos" do
+        patch move_task_path(subtasks.first), params: { group: "none", parent_id: "", previous_id: tasks[1].id }, as: :json
+
+        expect(subtasks.first.reload.parent).to be_nil
+        expect(list.tasks.actives.where(parent_id: nil).reorder(:position).pluck(:id)).to eq([ tasks[0], tasks[1], subtasks.first, tasks[2] ].map(&:id))
+      end
+
+      it "recusa com 422 o que passaria do 5º nível ou formaria ciclo, sem mudar nada" do
+        deepest = 4.times.reduce(subtasks.first) { |current, _| create(:task, list:, parent: current) }
+
+        patch move_task_path(tasks.last), params: { group: "none", parent_id: deepest.id }, as: :json
+        expect(response).to have_http_status(:unprocessable_content)
+
+        patch move_task_path(parent), params: { group: "none", parent_id: subtasks.first.id }, as: :json
+        expect(response).to have_http_status(:unprocessable_content)
+        expect([ tasks.last.reload.parent, parent.reload.parent ]).to all(be_nil)
+      end
+    end
+
     it "põe a alça em toda tarefa aberta, e marca as seções que recebem tarefa e se a ordem é a personalizada" do
       tasks.first.finish!
 

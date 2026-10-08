@@ -16,11 +16,23 @@ class Task < ApplicationRecord
 
   # Subtarefa nova entra na lista da tarefa e no fim da ordem das subtarefas dela.
   def build_subtask(attributes = {})
-    position = subtasks.actives.maximum(:position)&.succ || 0
+    position = next_subtask_position
     subtasks.build(attributes).tap do |subtask|
       subtask.list = list
       subtask.position = position
     end
+  end
+
+  def next_subtask_position
+    subtasks.actives.maximum(:position)&.succ || 0
+  end
+
+  # Troca o pai da tarefa, que vai para o fim das subtarefas dele; sem pai, para o fim das tarefas de
+  # topo da lista. As validações recusam passar do 5º nível, ciclo e outra lista.
+  def nest_under!(new_parent)
+    return if new_parent&.id == parent_id
+
+    update!(parent: new_parent, position: new_parent ? new_parent.next_subtask_position : list.next_task_position)
   end
 
   def finish!
