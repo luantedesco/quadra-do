@@ -1,0 +1,115 @@
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  RUBY_YJIT_ENABLE: '1'
+
+jobs:
+  rspec:
+    name: RSpec
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: quadra_do_test
+          POSTGRES_INITDB_ARGS: '--nosync'
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+          --tmpfs /var/lib/postgresql/data
+
+    env:
+      RAILS_ENV: test
+      CI: true
+      BUNDLE_WITHOUT: development
+      PGHOST: localhost
+      PGPORT: 5432
+      USERNAME_DATABASE: postgres
+      PASSWORD_DATABASE: postgres
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Setup database
+        run: bin/rails db:schema:load
+
+      - name: Build CSS
+        run: bin/rails dartsass:build
+
+      - name: Run RSpec
+        run: bundle exec rspec --format progress
+
+  rubocop:
+    name: RuboCop
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Run RuboCop
+        run: bundle exec rubocop --parallel --format github
+
+  erb_lint:
+    name: ERB Lint
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Run ERB Lint
+        run: bundle exec erb_lint --lint-all
+
+  brakeman:
+    name: Brakeman
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    env:
+      BUNDLE_WITHOUT: development
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Run Brakeman
+        run: bin/brakeman --quiet --no-pager --exit-on-warn --exit-on-error
