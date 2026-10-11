@@ -55,6 +55,9 @@ jobs:
       - name: Setup database
         run: bin/rails db:schema:load
 
+      - name: Build CSS
+        run: bin/rails dartsass:build
+
       - name: Run RSpec
         run: bundle exec rspec --format progress
 
