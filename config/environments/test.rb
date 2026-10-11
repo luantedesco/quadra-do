@@ -50,4 +50,13 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # Consulta N+1 percorrida por spec levanta erro; eager loading não usado gera falso positivo e fica de fora.
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.raise = true
+    Bullet.n_plus_one_query_enable = true
+    Bullet.unused_eager_loading_enable = false
+    Bullet.counter_cache_enable = false
+  end
 end

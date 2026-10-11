@@ -1,0 +1,2 @@
+<%# Coluna do detalhe da tarefa; vazia, não aparece. Aberta pela URL (?task=), carrega a tarefa. %>
+<%= turbo_frame_tag "task_detail", src: (task_path(params[:task], from: request.path) if params[:task].present?), class: "col-xl-4" %>

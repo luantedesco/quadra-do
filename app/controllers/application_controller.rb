@@ -4,4 +4,23 @@ class ApplicationController < ActionController::Base
 
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
+
+  # Cada action chama o service Web::<Controller>::<Action>Service e expõe a resposta à view.
+  def self.service_actions(*actions)
+    actions.each do |action|
+      define_method(action) do
+        service = "Web::#{controller_name.camelize}::#{action.to_s.camelize}Service".constantize
+        respond_attempt(service.new(params:, cookies:).call)
+      end
+    end
+  end
+
+  private
+
+  # Cada chave do Hash do service vira variável da view (@instance, @error...). A action que precisa
+  # navegar em vez de renderizar define "<action>_redirect".
+  def respond_attempt(response)
+    response.each { |key, value| instance_variable_set("@#{key}", value) }
+    send("#{action_name}_redirect") if respond_to?("#{action_name}_redirect", true)
+  end
 end

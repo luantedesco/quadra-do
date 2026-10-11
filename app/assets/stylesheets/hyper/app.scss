@@ -1,0 +1,63 @@
+/*
+Template Name: Hyper - Responsive Bootstrap 5 Admin Dashboard
+Version: 5.4.2
+Author: CoderThemes
+Email: support@coderthemes.com
+File: Main Css File
+*/
+
+// Hyper compilado a partir do fonte, só com o que o app usa: sem plugins, sem páginas de demo e sem
+// componentes só de demonstração.
+
+// Core files
+@import "bootstrap/functions";
+@import "bootstrap/variables";
+
+@import "config/variables";
+@import "config/variables-dark";
+@import "config/variables-custom";
+@import "config/theme-mode";
+
+@import "bootstrap";
+
+// Fonts
+@import "fonts/nunito";
+
+// Structure
+@import "structure/sidenav";
+@import "structure/topbar";
+@import "structure/page-head";
+@import "structure/footer";
+@import "structure/horizontal-nav"; // Horizontal Nav
+
+// Components
+@import "components/root";
+@import "components/utilities";
+@import "components/background";
+@import "components/accordions";
+@import "components/alert";
+@import "components/avatar";
+@import "components/breadcrumb";
+@import "components/buttons";
+@import "components/badge";
+@import "components/card";
+@import "components/custom-forms";
+@import "components/dropdown";
+@import "components/forms";
+@import "components/modal";
+@import "components/nav";
+@import "components/pagination";
+@import "components/popover";
+@import "components/print";
+@import "components/progress";
+@import "components/reboot";
+@import "components/switch";
+@import "components/tables";
+@import "components/type";
+@import "components/tooltip";
+
+// Pages
+@import "pages/tasks";
+
+// Plugins
+@import "plugins/select2";

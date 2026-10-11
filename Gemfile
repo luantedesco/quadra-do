@@ -29,6 +29,10 @@ gem "bootsnap", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 1.2"
 
+gem "rails-i18n", "~> 8.1"
+gem "dartsass-rails", "~> 0.5"
+gem "bootstrap", "~> 5.3"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
@@ -41,9 +45,17 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  gem "factory_bot_rails", "~> 6.5"
+  gem "rspec-rails", "~> 8.0"
+  gem "shoulda-matchers", "~> 8.0"
+  gem "bullet", "~> 8.2"
 end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  gem "erb_lint", "~> 0.9", require: false
+  gem "foreman", "~> 0.90", require: false
 end

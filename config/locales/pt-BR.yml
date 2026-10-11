@@ -1,0 +1,78 @@
+pt-BR:
+  actions:
+    destroy: "Apagar"
+    edit: "Editar"
+    save: "Salvar"
+  activerecord:
+    attributes:
+      list:
+        color: "Cor"
+        name: "Nome"
+      task:
+        deadline: "Prazo"
+        description: "Descrição"
+        priority: "Prioridade"
+        title: "Título"
+    models:
+      list:
+        one: "Lista"
+        other: "Listas"
+      task:
+        one: "Tarefa"
+        other: "Tarefas"
+  lists:
+    destroy_confirm: "Apagar a lista e as tarefas dela?"
+    drag: "Arrastar para reordenar"
+    edit: "Editar lista"
+    finished: "Concluídas"
+    group:
+      deadline: "Prazo"
+      none: "Nenhum"
+      priority: "Prioridade"
+      sections:
+        deadline:
+          later: "Depois"
+          next_7_days: "Próximos 7 dias"
+          no_deadline: "Sem prazo"
+          overdue: "Atrasadas"
+          today: "Hoje"
+          tomorrow: "Amanhã"
+        priority:
+          high: "Alta"
+          low: "Baixa"
+          medium: "Média"
+          none: "Nenhuma"
+      title_menu: "Agrupar por"
+    new: "Nova lista"
+    no_color: "Sem cor"
+    no_tasks: "Nenhuma tarefa aberta nesta lista."
+    sort:
+      asc: "Crescente"
+      created: "Criação"
+      desc: "Decrescente"
+      deadline: "Prazo"
+      manual: "Personalizada"
+      priority: "Prioridade"
+      title: "Título"
+      title_menu: "Ordenar por"
+  panel:
+    empty: "Nenhuma lista ainda. Crie a primeira para organizar suas tarefas."
+  sidebar:
+    menu: "Menu"
+    theme_mode: "Tema"
+  tasks:
+    add_subtask: "Adicionar subtarefa"
+    add_task: "Adicionar tarefa"
+    close: "Fechar"
+    destroy_subtask_confirm: "Apagar a subtarefa?"
+    finish: "Concluída"
+    move:
+      not_droppable: "Esta seção não recebe tarefa."
+    move_to_list:
+      sub_task: "Subtarefa segue a lista da tarefa pai."
+    priorities:
+      high: "Alta"
+      low: "Baixa"
+      medium: "Média"
+      none: "Nenhuma"
+    subtasks: "Subtarefas"

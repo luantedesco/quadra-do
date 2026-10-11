@@ -1,0 +1,13 @@
+<div class="dropdown tasks-panel-menu">
+  <a href="#" class="text-muted px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="<%= list.name %>">
+    <i class="ri-more-2-fill"></i>
+  </a>
+  <div class="dropdown-menu dropdown-menu-end">
+    <%= link_to edit_list_path(list), data: { turbo_frame: "modal" }, class: "dropdown-item" do %>
+      <i class="ri-pencil-line me-1"></i><%= t("actions.edit") %>
+    <% end %>
+    <%= link_to list_path(list), data: { turbo_method: :delete, turbo_confirm: t("lists.destroy_confirm") }, class: "dropdown-item" do %>
+      <i class="ri-delete-bin-line me-1"></i><%= t("actions.destroy") %>
+    <% end %>
+  </div>
+</div>

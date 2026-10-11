@@ -9,6 +9,14 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  root "lists#index"
+  resources :lists, except: :index
+  resources :tasks, only: %i[show create update destroy] do
+    patch :move, on: :member
+    patch :toggle_finish, on: :member
+    patch :move_to_list, on: :member
+  end
+  resource :sidebar, only: [], controller: "sidebar" do
+    patch :move
+  end
 end

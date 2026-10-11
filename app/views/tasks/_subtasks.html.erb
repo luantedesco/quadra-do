@@ -1,0 +1,27 @@
+<% subtasks = task.subtasks.actives.order(:position).to_a %>
+<div id="task-subtasks" class="mt-4">
+  <h5 class="mb-2 font-16">
+    <%= t("tasks.subtasks") %>
+    <% if subtasks.any? %>
+      <span class="float-end text-muted font-13"><%= subtasks.count(&:finished_at) %>/<%= subtasks.size %></span>
+    <% end %>
+  </h5>
+  <% if subtasks.any? %>
+    <div class="progress progress-sm mb-2">
+      <div class="progress-bar" role="progressbar" style="width: <%= 100 * subtasks.count(&:finished_at) / subtasks.size %>%;"></div>
+    </div>
+  <% end %>
+  <% subtasks.each do |subtask| %>
+    <div class="d-flex align-items-center gap-2 mt-1" id="<%= dom_id(subtask) %>">
+      <%= render "tasks/finish_toggle", task: subtask, id_prefix: :subtask_finished %>
+      <%= link_to subtask.title, task_path(subtask, from: task_return_path(task)), class: class_names("flex-grow-1 text-truncate text-body", "text-decoration-line-through text-muted": subtask.finished_at), data: { turbo_frame: "task_detail", turbo_action: "advance" } %>
+      <%= link_to task_path(subtask), class: "text-muted", "aria-label": t("actions.destroy"), title: t("actions.destroy"), data: { turbo_method: :delete, turbo_confirm: t("tasks.destroy_subtask_confirm") } do %>
+        <i class="ri-close-line"></i>
+      <% end %>
+    </div>
+  <% end %>
+  <%= form_with model: Task.new, url: tasks_path, namespace: "subtask", class: "mt-2" do |form| %>
+    <%= form.hidden_field :parent_id, value: task.id %>
+    <%= form.text_field :title, class: "form-control form-control-sm", placeholder: t("tasks.add_subtask"), required: true, autocomplete: "off", aria: { label: t("tasks.add_subtask") } %>
+  <% end %>
+</div>

@@ -1,0 +1,22 @@
+<%# Adicionar tarefa no topo da lista: título e Enter; o calendário abre o campo de prazo. %>
+<% result = flash[:quick_add] %>
+<%= form_with model: Task.new, url: tasks_path, class: "card mb-2" do |form| %>
+  <div class="card-body p-2">
+    <%= form.hidden_field :list_id, value: list.id %>
+    <div class="input-group">
+      <span class="input-group-text bg-transparent border-0"><i class="ri-add-line"></i></span>
+      <%= form.text_field :title, class: "form-control border-0 shadow-none", placeholder: t("tasks.add_task"), required: true, autocomplete: "off", autofocus: result.present?, aria: { label: t("tasks.add_task") } %>
+      <button class="btn btn-light" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" title="<%= Task.human_attribute_name(:deadline) %>">
+        <i class="ri-calendar-line"></i>
+      </button>
+      <div class="dropdown-menu dropdown-menu-end p-2">
+        <%= form.datetime_field :deadline, class: "form-control form-control-sm", aria: { label: Task.human_attribute_name(:deadline) } %>
+      </div>
+      <%# Com dois campos, o Enter só envia se houver botão de envio. %>
+      <%= form.submit t("tasks.add_task"), class: "visually-hidden" %>
+    </div>
+    <% if result.present? && result != "ok" %>
+      <div class="invalid-feedback d-block px-2"><%= result %></div>
+    <% end %>
+  </div>
+<% end %>

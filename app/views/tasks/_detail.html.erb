@@ -1,0 +1,50 @@
+<%# Detalhe da tarefa no card do Hyper, aberto ao lado da lista; cada campo salva ao mudar. %>
+<div class="card mb-0" id="task-detail">
+  <div class="card-body">
+    <div class="card-widgets">
+      <%= link_to task_return_path(task), "aria-label": t("tasks.close"), title: t("tasks.close"), data: { turbo_frame: "_top" } do %>
+        <i class="ri-close-line"></i>
+      <% end %>
+    </div>
+
+    <div class="form-check mb-2">
+      <%= render "tasks/finish_toggle", task:, id_prefix: :detail_finished %>
+      <label class="form-check-label" for="<%= dom_id(task, :detail_finished) %>"><%= t("tasks.finish") %></label>
+    </div>
+
+    <p class="text-muted font-13 mb-2">
+      <i class="ri-list-check me-1"></i><%= task.list.name %>
+      <% if task.parent %>
+        <%= link_to task_path(task.parent, from: task_return_path(task)), class: "ms-2", data: { turbo_frame: "task_detail", turbo_action: "advance" } do %>
+          <i class="ri-arrow-up-line"></i><%= task.parent.title %>
+        <% end %>
+      <% end %>
+    </p>
+
+    <%= form_with model: task, namespace: "detail", data: { controller: "auto-submit" } do |form| %>
+      <%= form.text_field :title, class: class_names("form-control border-0 px-0 fs-4 fw-semibold shadow-none", "is-invalid": task.errors[:title].any?), required: true, aria: { label: Task.human_attribute_name(:title) }, data: { action: "change->auto-submit#submit" } %>
+      <% task.errors.full_messages_for(:title).each do |message| %>
+        <div class="invalid-feedback"><%= message %></div>
+      <% end %>
+
+      <div class="row g-2 mb-3">
+        <div class="col-sm-7">
+          <%= form.label :deadline, class: "form-label font-13" %>
+          <%= form.datetime_field :deadline, class: "form-control form-control-sm", data: { action: "change->auto-submit#submit" } %>
+        </div>
+        <div class="col-sm-5">
+          <%= form.label :priority, class: "form-label font-13" %>
+          <%= form.select :priority, Task.priorities.keys.map { |priority| [ t("tasks.priorities.#{priority}"), priority ] }, {}, class: class_names("form-select form-select-sm", "is-invalid": task.errors[:priority].any?), data: { action: "change->auto-submit#submit" } %>
+          <% task.errors.full_messages_for(:priority).each do |message| %>
+            <div class="invalid-feedback"><%= message %></div>
+          <% end %>
+        </div>
+      </div>
+
+      <%= form.label :description, class: "form-label font-13" %>
+      <%= form.text_area :description, rows: 5, class: "form-control", data: { action: "change->auto-submit#submit" } %>
+    <% end %>
+
+    <%= render "tasks/subtasks", task: task if task.accepts_subtasks? %>
+  </div>
+</div>

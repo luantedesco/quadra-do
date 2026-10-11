@@ -1,0 +1,38 @@
+<div class="leftside-menu">
+  <%= link_to root_path, class: "logo" do %>
+    <span class="logo-lg">
+      <%= image_tag "favicon.svg", alt: "logo" %>
+      <span class="logo-text">Quadra Do</span>
+    </span>
+    <span class="logo-sm">
+      <%= image_tag "favicon.svg", alt: "logo" %>
+    </span>
+  <% end %>
+
+  <div class="button-close-fullsidebar" data-action="click->sidebar#close">
+    <i class="ri-close-fill align-middle"></i>
+  </div>
+
+  <div class="h-100 d-flex flex-column" id="leftside-menu-container">
+    <ul class="side-nav" id="side-nav">
+      <% navigation_items.each do |item| %>
+        <% active = navigation_item_active?(item) %>
+        <li class="<%= class_names("side-nav-item", "menuitem-active": active) %>">
+          <%= link_to item[:path], class: class_names("side-nav-link", active: active), title: item[:label] do %>
+            <i class="<%= item[:icon] %>"></i>
+            <span><%= item[:label] %></span>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+
+    <ul class="side-nav side-nav-bottom mt-auto" id="side-nav-bottom">
+      <li class="side-nav-item">
+        <a href="#" class="side-nav-link" data-action="click->theme#toggle:prevent">
+          <i class="<%= theme_preference == "dark" ? "ri-sun-line" : "ri-moon-line" %>" id="theme-icon-toggle"></i>
+          <span><%= t("sidebar.theme_mode") %></span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

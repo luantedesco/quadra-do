@@ -1,0 +1,26 @@
+<% depth = local_assigns.fetch(:depth, 0) %>
+<% children = local_assigns.fetch(:children, []) %>
+<div class="row justify-content-sm-between py-1">
+  <div class="<%= class_names("col-sm-6 mb-2 mb-sm-0 text-truncate", "text-decoration-line-through text-muted": task.finished_at) %>" style="padding-left: <%= depth * 1.5 + 0.75 %>rem;">
+    <% if local_assigns[:draggable] %>
+      <i class="ri-draggable text-muted task-drag-handle me-1" title="<%= t("lists.drag") %>"></i>
+    <% end %>
+    <% if children.any? %>
+      <a class="subtask-toggle text-muted" data-bs-toggle="collapse" href="#subtasks-<%= task.id %>" role="button" aria-expanded="<%= local_assigns[:expanded] %>" aria-controls="subtasks-<%= task.id %>" title="<%= t("tasks.subtasks") %>">
+        <i class="ri-arrow-right-s-line"></i>
+      </a>
+    <% else %>
+      <span class="subtask-toggle-spacer"></span>
+    <% end %>
+    <%= render "tasks/finish_toggle", task:, id_prefix: :row_finished %>
+    <%= link_to task.title, task_path(task, from: request.path), class: "text-body", data: { turbo_frame: "task_detail", turbo_action: "advance" } %>
+  </div>
+  <div class="col-sm-6">
+    <ul class="list-inline font-13 text-sm-end mb-0">
+      <% if task.deadline %>
+        <li class="list-inline-item"><i class="ri-calendar-line font-16 me-1"></i><%= l(task.deadline, format: :short) %></li>
+      <% end %>
+      <li class="list-inline-item ms-2"><%= priority_badge(task) %></li>
+    </ul>
+  </div>
+</div>

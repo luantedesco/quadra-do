@@ -1,0 +1,125 @@
+/* Sem o SimpleBar do Hyper, o menu rola com o scroll nativo. Só com ícones (condensed), o item
+   expande por cima do conteúdo no hover e o container não pode cortá-lo. */
+#leftside-menu-container {
+  overflow-y: auto;
+}
+
+html[data-sidenav-size="condensed"] #leftside-menu-container {
+  overflow: visible;
+}
+
+/* Sem topbar nem footer, o conteúdo ocupa no mínimo a tela inteira e não reserva no fim o espaço
+   do footer do Hyper. */
+.content-page {
+  min-height: 100vh;
+  padding-bottom: 0.75rem;
+}
+
+/* Só com ícones, o Hyper solta a sidebar do topo (position: absolute) e estica o conteúdo para
+   1800px, contando com o SimpleBar; aqui ela continua fixa e o conteúdo tem a altura da tela. */
+html[data-sidenav-size="condensed"]:not([data-layout="topnav"]) .wrapper .leftside-menu {
+  position: fixed;
+}
+
+html[data-sidenav-size="condensed"]:not([data-layout="topnav"]) .wrapper .content-page {
+  min-height: 100vh;
+}
+
+/* O logo é um ícone quadrado seguido do nome, não o wordmark baixo que o Hyper espera. */
+.leftside-menu .logo {
+  padding: 0 12px;
+}
+
+.leftside-menu .logo img {
+  height: 32px;
+  vertical-align: middle;
+}
+
+.leftside-menu .logo-text {
+  margin-left: 8px;
+  vertical-align: middle;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ct-menu-item-active-color);
+}
+
+/* Sem topbar, o botão que abre a gaveta no mobile flutua no canto, e o conteúdo desce para não
+   ficar embaixo dele. */
+.sidebar-mobile-toggle {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 1001;
+  padding: 4px 10px;
+  font-size: 1.25rem;
+}
+
+@media (max-width: 767.98px) {
+  .content-page {
+    padding-top: 56px;
+  }
+
+  /* O servidor renderiza o menu só com ícones sem saber a largura da tela; até o controller sidebar
+     trocar para a gaveta (full), a sidebar fica escondida e o conteúdo ocupa a tela, sem piscar. */
+  html:not([data-sidenav-size="full"]):not([data-layout="topnav"]) .wrapper .leftside-menu {
+    display: none;
+  }
+
+  html:not([data-sidenav-size="full"]):not([data-layout="topnav"]) .wrapper .content-page {
+    margin-left: 0;
+  }
+}
+
+/* Painel de Tarefas: segunda coluna fixa ao lado do menu só com ícones, com as listas (como no
+   TickTick). Abaixo de 768px vira o offcanvas do Bootstrap, aberto pelo botão da lista. */
+@media (min-width: 768px) {
+  .tasks-panel {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: var(--ct-leftbar-width-sm);
+    width: 260px;
+    overflow-y: auto;
+    background-color: var(--ct-secondary-bg);
+    border-right: 1px solid var(--ct-border-color);
+    z-index: 999;
+  }
+
+  html:not([data-layout="topnav"]) .wrapper .content-page.with-tasks-panel {
+    margin-left: calc(var(--ct-leftbar-width-sm) + 260px);
+  }
+}
+
+.tasks-panel-item {
+  border-radius: 4px;
+}
+
+.tasks-panel-item > a {
+  padding: 6px 8px;
+  color: var(--ct-body-color);
+}
+
+.tasks-panel-item:hover,
+.tasks-panel-item.active {
+  background-color: var(--ct-tertiary-bg);
+}
+
+.tasks-panel-item.active > a {
+  color: var(--ct-primary);
+  font-weight: 600;
+}
+
+/* O menu de editar e apagar da lista só aparece no hover. */
+.tasks-panel-item .tasks-panel-menu {
+  visibility: hidden;
+}
+
+.tasks-panel-item:hover .tasks-panel-menu {
+  visibility: visible;
+}
+
+/* Lista do painel debaixo da tarefa arrastada: soltar ali leva a tarefa para ela. */
+.tasks-panel-item.drop-target {
+  background-color: var(--ct-primary-bg-subtle);
+  outline: 1px dashed var(--ct-primary);
+}

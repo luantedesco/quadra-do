@@ -1,0 +1,6 @@
+<% if @error %>
+  <%= turbo_stream.replace "task-detail", partial: "tasks/detail", locals: { task: @task } %>
+<% else %>
+  <%# Sem o request-id, o Turbo não ignora o refresh como sendo da própria página, e a tela atualiza. %>
+  <%= turbo_stream.refresh(request_id: nil) %>
+<% end %>

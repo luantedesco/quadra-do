@@ -1,0 +1,40 @@
+/* Durante a troca de tema nada anima: o fundo e o texto do Hyper trocam na hora, e os elementos com
+   transição de hover e foco (botões, campos, logo) ficariam deslizando para trás. */
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition: none !important;
+}
+
+/* Coluna do detalhe da tarefa (turbo-frame, que nasce inline); vazia, não aparece. */
+turbo-frame#task_detail {
+  display: block;
+}
+
+turbo-frame#task_detail:empty {
+  display: none;
+}
+
+/* Seta das subtarefas na tabela: aponta para a direita recolhida e para baixo aberta; tarefa sem
+   subtarefas guarda o mesmo espaço, para os títulos alinharem. */
+.subtask-toggle,
+.subtask-toggle-spacer {
+  display: inline-block;
+  width: 1.1rem;
+}
+
+.subtask-toggle i {
+  display: inline-block;
+  transition: transform 0.15s;
+}
+
+.subtask-toggle[aria-expanded="true"] i {
+  transform: rotate(90deg);
+}
+
+/* Tarefa debaixo da arrastada, com o ponteiro no meio da linha: soltar ali a torna filha dela. */
+.task-node.nest-target > .row {
+  background-color: var(--ct-primary-bg-subtle);
+  outline: 1px dashed var(--ct-primary);
+  border-radius: 4px;
+}

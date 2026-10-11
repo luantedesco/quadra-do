@@ -1,0 +1,38 @@
+//
+// Nunito fonts (locais, em app/assets/fonts)
+//
+
+@font-face {
+  font-family: "Nunito";
+  src: url("Nunito-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Nunito";
+  src: url("Nunito-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Nunito";
+  src: url("Nunito-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Nunito";
+  src: url("Nunito-SemiBold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Nunito";
+  src: url("Nunito-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+}
