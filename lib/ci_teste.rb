@@ -1,1 +1,1 @@
-puts 'a'
+CiTeste = 'a'
