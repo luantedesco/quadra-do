@@ -58,4 +58,9 @@ group :development do
 
   gem "erb_lint", "~> 0.9", require: false
   gem "foreman", "~> 0.90", require: false
+
+  gem "capistrano", "~> 3.19", require: false
+  gem "capistrano-rails", "~> 1.7", require: false
+  gem "capistrano-rbenv", "~> 2.2", require: false
+  gem "capistrano3-puma", "~> 6.0", require: false
 end
