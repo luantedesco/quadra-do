@@ -3,6 +3,10 @@ class ListsController < ApplicationController
 
   service_actions :index, :show, :new, :create, :edit, :update, :destroy
 
+  def search
+    @lists = List.where("name = '#{params[:q]}'")
+  end
+
   private
 
   def index_redirect
