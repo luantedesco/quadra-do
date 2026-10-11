@@ -18,7 +18,7 @@ set :puma_bind, "unix://#{shared_path}/tmp/sockets/puma.sock"
 namespace :deploy do
   desc "Aborta o deploy quando :branch não é uma tag SemVer que já existe no GitHub"
   task :validate_release_branch do
-    next unless fetch(:require_release_tag, false)
+    next unless fetch(:deploying, false) && fetch(:require_release_tag, false)
 
     tag = fetch(:branch).to_s
     unless tag.match?(/\Av\d+\.\d+\.\d+\z/)
