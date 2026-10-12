@@ -1,0 +1,10 @@
+/home/deploy/apps/quadra-do/shared/log/*.log {
+    su root root
+    daily
+    missingok
+    rotate 52
+    compress
+    delaycompress
+    notifempty
+    copytruncate
+}
