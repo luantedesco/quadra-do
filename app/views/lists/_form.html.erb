@@ -1,4 +1,4 @@
-<%= form_with model: list do |form| %>
+<%= form_with model: list, id: dom_id(list, :form) do |form| %>
   <div class="mb-2">
     <%= form.label :name, class: "form-label" %>
     <%= form.text_field :name, class: class_names("form-control", "is-invalid": list.errors[:name].any?), required: true %>

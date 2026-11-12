@@ -9,13 +9,13 @@ class ListsController < ApplicationController
     redirect_to list_path(@list) if @list
   end
 
-  # Com erro, o formulário volta no modal com a mensagem no campo.
+  # A lista nova abre; com erro, o formulário do modal volta com a mensagem no campo.
   def create_redirect
-    @error ? render(:new, status: :unprocessable_content) : redirect_to(list_path(@list))
+    @error ? render(status: :unprocessable_content) : redirect_to(list_path(@list))
   end
 
   def update_redirect
-    @error ? render(:edit, status: :unprocessable_content) : redirect_to(list_path(@list))
+    render status: :unprocessable_content if @error
   end
 
   def destroy_redirect

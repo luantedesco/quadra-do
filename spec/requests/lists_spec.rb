@@ -261,24 +261,27 @@ RSpec.describe "Listas", type: :request do
       assert_select "#list_no_color[checked]"
     end
 
-    it "não cria lista inválida e devolve o formulário com a mensagem no campo" do
+    it "não cria lista inválida e troca o formulário do modal com a mensagem no campo" do
       expect do
-        post lists_path, params: { list: { name: "", color: "vermelho" } }
+        post lists_path, params: { list: { name: "", color: "vermelho" } }, as: :turbo_stream
       end.not_to change(List, :count)
 
       expect(response).to have_http_status(:unprocessable_content)
-      assert_select ".modal #list_name.is-invalid + .invalid-feedback", text: "Nome não pode ficar em branco"
-      assert_select ".modal #list_color.is-invalid"
-      assert_select ".modal .invalid-feedback.d-block", text: /Cor/
+      assert_turbo_stream(action: :replace, target: "form_list") do
+        assert_select "#list_name.is-invalid + .invalid-feedback", text: "Nome não pode ficar em branco"
+        assert_select "#list_color.is-invalid"
+        assert_select ".invalid-feedback.d-block", text: /Cor/
+      end
     end
 
-    it "edita a lista e volta para ela" do
+    it "edita a lista e responde com o refresh da página, sem o request-id" do
       list = create(:list, name: "Casa")
 
-      patch list_path(list), params: { list: { name: "Lar" } }
+      patch list_path(list), params: { list: { name: "Lar" } }, as: :turbo_stream
 
       expect(list.reload.name).to eq("Lar")
-      expect(response).to redirect_to(list_path(list))
+      assert_turbo_stream action: :refresh
+      expect(response.body).not_to include("request-id")
     end
 
     it "tira a cor da lista na edição" do
@@ -289,14 +292,16 @@ RSpec.describe "Listas", type: :request do
       expect(list.reload.color).to be_nil
     end
 
-    it "não salva a edição inválida e devolve o formulário" do
+    it "não salva a edição inválida e troca o formulário do modal" do
       list = create(:list, name: "Casa")
 
-      patch list_path(list), params: { list: { name: "" } }
+      patch list_path(list), params: { list: { name: "" } }, as: :turbo_stream
 
       expect(list.reload.name).to eq("Casa")
       expect(response).to have_http_status(:unprocessable_content)
-      assert_select ".modal form[action=?] #list_name.is-invalid", list_path(list)
+      assert_turbo_stream(action: :replace, target: "form_list_#{list.id}") do
+        assert_select "form[action=?] #list_name.is-invalid", list_path(list)
+      end
     end
 
     it "apaga a lista com as tarefas e volta para a raiz" do

@@ -1,2 +1,7 @@
+<%# A tarefa de topo volta o campo de adicionar vazio e focado, para a próxima, com o erro abaixo dele. A
+    subtarefa é criada no painel, que fica aberto: a página só atualiza. %>
+<% unless @task.parent_id? %>
+  <%= turbo_stream.replace "quick-add", partial: "tasks/quick_add", locals: { list: @task.list, error: @error, autofocus: true } %>
+<% end %>
 <%# Sem o request-id, o Turbo não ignora o refresh como sendo da própria página, e a tela atualiza. %>
 <%= turbo_stream.refresh(request_id: nil) unless @error %>
